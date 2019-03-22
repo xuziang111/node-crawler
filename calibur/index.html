@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    body{
+        display:flex;
+        flex-wrap: wrap;
+    }
+    </style>
+</head>
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+
+
+    <script src="echarts.js"></script>
+    <script>
+    let xxx = {"code":0,"data":{"list":[{"id":1046,"avatar":"https:\/\/image.calibur.tv\/FvaqqeEWozZrYhG5_DmkG2f1uXXn","name":"\u7531\u6bd4\u6ee8\u7ed3\u8863","boss":{"zone":"san-ye-1","avatar":"https:\/\/image.calibur.tv\/user\/17912\/user\/1547248728564.caliburImage3515.jpeg","nickname":"\u846c\u7f42\u7c9f"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"268.72"},{"time":1552924800,"value":"260.72"},{"time":1552838400,"value":"257.72"},{"time":1552752000,"value":"256.72"},{"time":1552665600,"value":"256.72"},{"time":1552579200,"value":"253.72"}],"market_price":"292.72","stock_price":"1.00","star_count":"292.72","is_locked":false,"fans_count":56,"company_state":1,"ipo_at":"2019-02-20 03:11:41","created_at":"2018-10-15 00:11:01"},{"id":1299,"avatar":"https:\/\/image.calibur.tv\/user\/38132\/\/role\/1299\/1544176695466-v0q.gif","name":"\u4e2d\u91ce\u4e09\u7396","boss":{"zone":"yang-cai-2","avatar":"https:\/\/image.calibur.tv\/user\/84844\/user\/1552450181553.caliburImage3985.jpeg","nickname":"\u9171\u8272\u98ce\u5439\u8fc7\u30a5"},"manager":{"zone":"ban-tian-yin-shi-1","avatar":"https:\/\/image.calibur.tv\/user\/38132\/avatar\/1548499704869-czt.jpeg","nickname":"\u7396\u7396\u7396"},"has_star":0,"market_trend":[{"time":1553011200,"value":"3264.66"},{"time":1552924800,"value":"3226.05"},{"time":1552838400,"value":"3186.46"},{"time":1552752000,"value":"3146.03"},{"time":1552665600,"value":"2975.48"},{"time":1552579200,"value":"2835.97"}],"market_price":"3391.67","stock_price":"1.78","star_count":"2561.42","is_locked":false,"fans_count":432,"company_state":1,"ipo_at":"2019-02-12 23:46:36","created_at":"2018-11-12 10:51:10"},{"id":199,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1523721761539-bok.png","name":"\u65f6\u5d0e\u72c2\u4e09","boss":{"zone":"dai-liu","avatar":"https:\/\/image.calibur.tv\/user\/7010\/avatar\/0\/1531070705818-mkj.jpeg","nickname":"\u5e26\u516d"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"750.77"},{"time":1552924800,"value":"746.66"},{"time":1552838400,"value":"745.40"},{"time":1552752000,"value":"744.25"},{"time":1552665600,"value":"729.75"},{"time":1552579200,"value":"728.04"}],"market_price":"754.61","stock_price":"1.15","star_count":"716.79","is_locked":false,"fans_count":143,"company_state":1,"ipo_at":"2019-02-13 12:38:56","created_at":"2018-05-19 16:49:54"},{"id":1061,"avatar":"https:\/\/image.calibur.tv\/user\/21113\/\/role\/1061\/1543135948412-xye.jpeg","name":"\u592a\u5bb0\u6cbb","boss":{"zone":"ying-dao-ma-yi-wo-lao-po","avatar":"https:\/\/image.calibur.tv\/user\/42969\/user\/1548045431208.caliburImage2341.jpeg","nickname":"\u5343\u53cd\u7530\u3048\u308b"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"117.32"},{"time":1552924800,"value":"117.32"},{"time":1552838400,"value":"106.32"},{"time":1552752000,"value":"106.32"},{"time":1552665600,"value":"106.08"},{"time":1552579200,"value":"105.88"}],"market_price":"125.32","stock_price":"1.00","star_count":"126.47","is_locked":false,"fans_count":35,"company_state":1,"ipo_at":"2019-02-24 16:48:02","created_at":"2018-10-21 20:23:33"},{"id":128,"avatar":"https:\/\/image.calibur.tv\/user\/26824\/role\/128\/1549955752317-3c7.jpeg","name":"\u52a0\u85e4\u60e0","boss":{"zone":"li-wu-pu","avatar":"https:\/\/image.calibur.tv\/user\/26824\/avatar\/1551792658978-pcf.jpeg","nickname":"\u771f\u624e\u3055\u3044\u3053\u3046"},"manager":{"zone":"li-wu-pu","avatar":"https:\/\/image.calibur.tv\/user\/26824\/avatar\/1551792658978-pcf.jpeg","nickname":"\u771f\u624e\u3055\u3044\u3053\u3046"},"has_star":0,"market_trend":[{"time":1553011200,"value":"1790.20"},{"time":1552924800,"value":"1776.50"},{"time":1552838400,"value":"1769.00"},{"time":1552752000,"value":"1756.00"},{"time":1552665600,"value":"1748.00"},{"time":1552579200,"value":"1716.68"}],"market_price":"1800.53","stock_price":"1.25","star_count":"1506.43","is_locked":false,"fans_count":190,"company_state":1,"ipo_at":"2019-02-12 14:54:29","created_at":"2018-05-19 16:49:54"},{"id":41,"avatar":"https:\/\/image.calibur.tv\/user\/44729\/role\/41\/1550054476034-lrr.jpeg","name":"\u8587\u5c14\u8389\u7279\u00b7\u4f0a\u8299\u52a0\u767b","boss":{"zone":"lu-xiao-shou","avatar":"https:\/\/image.calibur.tv\/user\/19519\/avatar\/1543300689796-9nl.jpeg","nickname":"\u9646\u5c0f\u53d7"},"manager":{"zone":"xiao-you-4","avatar":"https:\/\/image.calibur.tv\/user\/44729\/user\/1547556546987.caliburImage3679.jpeg","nickname":"\u7b71\u6538"},"has_star":0,"market_trend":[{"time":1553011200,"value":"1567.34"},{"time":1552924800,"value":"1563.71"},{"time":1552838400,"value":"1558.20"},{"time":1552752000,"value":"1398.96"},{"time":1552665600,"value":"1364.76"},{"time":1552579200,"value":"1330.10"}],"market_price":"1577.74","stock_price":"1.05","star_count":"1378.12","is_locked":false,"fans_count":211,"company_state":1,"ipo_at":"2019-02-13 09:34:58","created_at":"2018-05-19 16:49:54"},{"id":146,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1522932795655-ud3.jpeg","name":"\u96ea\u4e4b\u4e0b\u96ea\u4e43","boss":{"zone":"pao-mian-xian-sheng","avatar":"https:\/\/image.calibur.tv\/user\/58640\/user\/1548933728588.caliburImage4477.jpeg","nickname":"\u6ce1\u9762\u5148\u751f"},"manager":{"zone":"pao-mian-xian-sheng","avatar":"https:\/\/image.calibur.tv\/user\/58640\/user\/1548933728588.caliburImage4477.jpeg","nickname":"\u6ce1\u9762\u5148\u751f"},"has_star":0,"market_trend":[{"time":1553011200,"value":"4503.46"},{"time":1552924800,"value":"4438.80"},{"time":1552838400,"value":"4339.87"},{"time":1552752000,"value":"4283.88"},{"time":1552665600,"value":"4157.18"},{"time":1552579200,"value":"4078.93"}],"market_price":"4571.05","stock_price":"1.30","star_count":"3281.68","is_locked":false,"fans_count":451,"company_state":1,"ipo_at":"2019-02-12 13:20:22","created_at":"2018-05-19 16:49:54"},{"id":194,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1523693145155-4wg.png","name":"\u4e24\u4eea\u5f0f","boss":{"zone":"su-ming-3","avatar":"https:\/\/image.calibur.tv\/user\/34702\/user\/1546422879126.caliburImage4041.jpeg","nickname":"Shi\u30feKi"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"414.50"},{"time":1552924800,"value":"405.49"},{"time":1552838400,"value":"404.49"},{"time":1552752000,"value":"404.49"},{"time":1552665600,"value":"404.49"},{"time":1552579200,"value":"389.49"}],"market_price":"425.80","stock_price":"1.00","star_count":"426.36","is_locked":false,"fans_count":74,"company_state":1,"ipo_at":"2019-02-13 13:48:58","created_at":"2018-05-19 16:49:54"},{"id":1542,"avatar":"https:\/\/image.calibur.tv\/user\/65110\/role\/trending\/register\/1552664713396-ju1.jpeg","name":"\u6850\u987b\u771f\u51ac","boss":{"zone":"gui-gui-guo-guo","avatar":"https:\/\/image.calibur.tv\/user\/73218\/user\/1553101042984.caliburImage7211.jpeg","nickname":"\u6851\u6986"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"194.28"}],"market_price":"256.28","stock_price":"1.00","star_count":"250.28","is_locked":false,"fans_count":25,"company_state":1,"ipo_at":"2019-03-20 19:57:55","created_at":"2019-03-15 23:45:18"},{"id":688,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1529419926014-6ns.jpeg","name":"\u5fa1\u5742\u7f8e\u7434","boss":{"zone":"yu-ban-mei-qin-9","avatar":"https:\/\/image.calibur.tv\/user\/16853\/avatar\/0\/1532752841904-bpc.jpeg","nickname":"\u5fa1\u5742\u7f8e\u7434"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"1191.39"},{"time":1552924800,"value":"1189.77"},{"time":1552838400,"value":"1151.37"},{"time":1552752000,"value":"1149.77"},{"time":1552665600,"value":"1127.41"},{"time":1552579200,"value":"1120.51"}],"market_price":"1195.40","stock_price":"1.60","star_count":"936.90","is_locked":false,"fans_count":100,"company_state":1,"ipo_at":"2019-02-12 23:56:26","created_at":"2018-06-19 22:52:08"},{"id":537,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1528785542940-j0n.jpeg","name":"\u9022\u5742\u5927\u6cb3","boss":{"zone":"mu-ou","avatar":"https:\/\/image.calibur.tv\/user\/805\/user\/1547517955871.caliburImage5240.jpeg","nickname":"\u6728\u5076"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"92.62"},{"time":1552924800,"value":"92.62"},{"time":1552838400,"value":"74.62"}],"market_price":"102.62","stock_price":"1.00","star_count":"100.62","is_locked":false,"fans_count":26,"company_state":1,"ipo_at":"2019-03-18 20:50:00","created_at":"2018-06-12 14:39:31"},{"id":114,"avatar":"https:\/\/image.calibur.tv\/bangumi\/33\/role\/114\/1536188085401-x75.jpeg","name":"\u963f\u5c14\u6258\u5229\u4e9a\u00b7\u6f58\u5fb7\u62c9\u8d21","boss":{"zone":"555525","avatar":"https:\/\/image.calibur.tv\/user\/68288\/user\/1549549845371.caliburImage7741.jpeg","nickname":"killy"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"792.22"},{"time":1552924800,"value":"784.20"},{"time":1552838400,"value":"783.05"},{"time":1552752000,"value":"776.35"},{"time":1552665600,"value":"744.00"},{"time":1552579200,"value":"738.70"}],"market_price":"811.18","stock_price":"1.15","star_count":"767.16","is_locked":false,"fans_count":130,"company_state":1,"ipo_at":"2019-02-13 12:09:50","created_at":"2018-05-19 16:49:54"},{"id":1387,"avatar":"https:\/\/image.calibur.tv\/user\/1389\/\/admin\/role\/create\/1543717318005-4vn.jpeg","name":"\u6a58\u7460\u8863","boss":{"zone":"hamburgerloser","avatar":"https:\/\/image.calibur.tv\/user\/69356\/avatar\/1553101537884-13a.jpeg","nickname":"Rui Tachibana"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"4841.47"},{"time":1552924800,"value":"4687.28"},{"time":1552838400,"value":"4540.13"},{"time":1552752000,"value":"4421.92"},{"time":1552665600,"value":"4295.63"},{"time":1552579200,"value":"4070.30"}],"market_price":"4843.03","stock_price":"1.70","star_count":"3714.91","is_locked":true,"fans_count":548,"company_state":1,"ipo_at":"2019-02-13 03:00:00","created_at":"2018-12-02 10:22:58"},{"id":9,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1521081319839-h8v.png","name":"\u672c\u95f4\u82bd\u8863\u5b50","boss":{"zone":"chi-tu-dou-de-tu-ji","avatar":"https:\/\/image.calibur.tv\/user\/31971\/avatar\/1538278221424\/7708\/.jpeg","nickname":"\u4e00\u5927\u888b\u5154\u53fd"},"manager":{"zone":"eric-bu-dong-feng-qing","avatar":"https:\/\/image.calibur.tv\/user\/85523\/avatar\/1552116861271-mat.png","nickname":"\u534e\u5c14\u8857\u4e4b\u72fc"},"has_star":0,"market_trend":[{"time":1553011200,"value":"235.01"},{"time":1552924800,"value":"234.01"},{"time":1552838400,"value":"223.00"},{"time":1552752000,"value":"221.00"},{"time":1552665600,"value":"213.00"},{"time":1552579200,"value":"211.63"}],"market_price":"236.01","stock_price":"1.00","star_count":"237.00","is_locked":false,"fans_count":33,"company_state":1,"ipo_at":"2019-03-13 13:18:18","created_at":"2018-05-19 16:49:54"},{"id":1365,"avatar":"https:\/\/image.calibur.tv\/admin\/38132\/role\/1365\/1544954440776-n2v.gif","name":"\u4e2d\u91ce\u4e8c\u4e43","boss":{"zone":"er-nai-zhong-ye","avatar":"https:\/\/image.calibur.tv\/user\/81409\/user\/1552671751896.caliburImage7434.jpeg","nickname":"\u4e2d\u91ce\u4e8c\u4e43"},"manager":{"zone":"er-nai-zhong-ye","avatar":"https:\/\/image.calibur.tv\/user\/81409\/user\/1552671751896.caliburImage7434.jpeg","nickname":"\u4e2d\u91ce\u4e8c\u4e43"},"has_star":0,"market_trend":[{"time":1553011200,"value":"1955.30"},{"time":1552924800,"value":"1906.07"},{"time":1552838400,"value":"1813.07"},{"time":1552752000,"value":"1794.31"},{"time":1552665600,"value":"1775.58"},{"time":1552579200,"value":"1758.81"}],"market_price":"1964.72","stock_price":"1.30","star_count":"1714.11","is_locked":false,"fans_count":203,"company_state":1,"ipo_at":"2019-02-16 12:07:14","created_at":"2018-11-25 14:50:32"},{"id":1366,"avatar":"https:\/\/image.calibur.tv\/user\/38132\/\/role\/1366\/1544177340080-kfq.gif","name":"\u4e2d\u91ce\u56db\u53f6","boss":{"zone":"ka-se-lin-na-an-dong-ni","avatar":"https:\/\/image.calibur.tv\/user\/9400\/avatar\/1550388808162-xvn.jpeg","nickname":"\u62fc\u51d1\u7684\u65ad\u5f26"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"817.48"},{"time":1552924800,"value":"792.40"},{"time":1552838400,"value":"758.02"},{"time":1552752000,"value":"700.65"},{"time":1552665600,"value":"644.49"},{"time":1552579200,"value":"628.94"}],"market_price":"830.84","stock_price":"1.80","star_count":"769.77","is_locked":false,"fans_count":126,"company_state":1,"ipo_at":"2019-02-22 08:51:14","created_at":"2018-11-25 14:57:33"},{"id":1367,"avatar":"https:\/\/image.calibur.tv\/admin\/38132\/role\/1367\/1544698993692-kdz.gif","name":"\u4e2d\u91ce\u4e94\u6708","boss":{"zone":"hamburgerloser","avatar":"https:\/\/image.calibur.tv\/user\/69356\/avatar\/1553101537884-13a.jpeg","nickname":"Rui Tachibana"},"manager":{"zone":"hamburgerloser","avatar":"https:\/\/image.calibur.tv\/user\/69356\/avatar\/1553101537884-13a.jpeg","nickname":"Rui Tachibana"},"has_star":0,"market_trend":[{"time":1553011200,"value":"1455.62"},{"time":1552924800,"value":"1437.83"},{"time":1552838400,"value":"1414.21"},{"time":1552752000,"value":"1379.23"},{"time":1552665600,"value":"1341.88"},{"time":1552579200,"value":"1229.43"}],"market_price":"1498.13","stock_price":"1.30","star_count":"1370.40","is_locked":false,"fans_count":239,"company_state":1,"ipo_at":"2019-02-16 11:52:08","created_at":"2018-11-25 15:02:08"},{"id":1023,"avatar":"https:\/\/image.calibur.tv\/user\/5594\/role\/1023\/1550122005796-imc.jpeg","name":"\u690e\u540d\u771f\u767d","boss":{"zone":"fei-zhai-ya","avatar":"https:\/\/image.calibur.tv\/user\/10431\/avatar\/0\/1532332634807-hh5.jpeg","nickname":"\u80a5\u5b85\u5440"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"427.10"},{"time":1552924800,"value":"425.64"},{"time":1552838400,"value":"412.84"},{"time":1552752000,"value":"412.09"},{"time":1552665600,"value":"405.34"},{"time":1552579200,"value":"404.00"}],"market_price":"428.11","stock_price":"1.50","star_count":"350.69","is_locked":false,"fans_count":60,"company_state":1,"ipo_at":"2019-02-14 19:38:11","created_at":"2018-09-08 18:59:33"},{"id":122,"avatar":"https:\/\/image.calibur.tv\/bangumi\/role\/1522682114320-wab.png","name":"\u95f4\u6850\u6a31","boss":{"zone":"xian-yu-jiang","avatar":"https:\/\/image.calibur.tv\/user\/21897\/avatar\/0\/1540288245996-lif.jpeg","nickname":"\u9e79\u9b5a\u91ac"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"55.12"},{"time":1552924800,"value":"52.12"},{"time":1552838400,"value":"52.12"},{"time":1552752000,"value":"52.12"},{"time":1552665600,"value":"44.44"},{"time":1552579200,"value":"44.44"}],"market_price":"58.62","stock_price":"1.00","star_count":"58.62","is_locked":false,"fans_count":26,"company_state":1,"ipo_at":"2019-03-15 15:13:01","created_at":"2018-05-19 16:49:54"},{"id":1400,"avatar":"https:\/\/image.calibur.tv\/user\/6066\/\/role\/1400\/1544073395717-35f.png","name":"\u5c3c\u7984\u00b7\u514b\u52b3\u72c4\u4e4c\u65af\u00b7\u607a\u6492\u00b7\u5965\u53e4\u65af\u90fd\u00b7\u65e5\u8033\u66fc\u5c3c\u5e93\u65af","boss":{"zone":"bei-yi-wang-de-sheng-lue-hao","avatar":"https:\/\/image.calibur.tv\/user\/23022\/user\/1550122332135.caliburImage5592.jpeg","nickname":"\u88ab\u9057\u5fd8\u7684\u7701\u7565\u53f7"},"manager":null,"has_star":0,"market_trend":[{"time":1553011200,"value":"240.77"},{"time":1552924800,"value":"240.77"},{"time":1552838400,"value":"239.77"},{"time":1552752000,"value":"233.77"},{"time":1552665600,"value":"231.77"},{"time":1552579200,"value":"231.77"}],"market_price":"243.77","stock_price":"1.00","star_count":"243.77","is_locked":false,"fans_count":30,"company_state":1,"ipo_at":"2019-03-08 13:22:59","created_at":"2018-12-06 13:10:08"}],"noMore":false,"total":70}}
+    console.log(xxx.data.list[0].id)
+    JSON.stringify(xxx)
+    console.log(xxx)
+    var myChart = echarts.init(document.getElementById('main'));
+    var option = {
+    xAxis: {
+        type: 'category',
+        data: ['', '', '', '', '', '', 's']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        smooth: true
+    }]
+};
+let data=[]
+// let yyy = xxx.list[0].market_trend.value
+let fragment = document.createDocumentFragment();
+xxx.data.list.forEach(function(liste,listi){
+    data.push({id:liste.name,trend:[]})
+    var content = `<div id='${"main" + listi}' style="width: 300px;height:200px;"></div>`
+    var objE = document.createElement("div");
+    objE.innerHTML = content;
+    let tempmain = 'main'+listi
+    fragment.appendChild(objE.childNodes[0])
+    liste.market_trend.forEach(function(trende,trendi){
+        data[listi].trend.push(trende)
+
+    })
+})
+
+console.log(data)
+        myChart.setOption(option);
+data.forEach(function(e,index){
+    var bodye = document.querySelector('body')
+    let temp_trend=[]
+    for(let i=0;i<6;i++){
+        if(e.trend[i]){
+            temp_trend[i] = e.trend[i].value
+        }else{
+            temp_trend[i] = ''
+        } 
+
+    }
+    console.log(temp_trend)
+    var option = {
+        title:{
+            text:e.id
+        },
+    xAxis: {
+        type: 'category',
+        data: ['', '', '', '', '', '', '']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: temp_trend,
+        type: 'line',
+        smooth: true
+    }]
+};
+
+var myChart = echarts.init(document.getElementById(tempmain))
+myChart.setOption(option);
+})
+bodye.appendChild(fragment)
+    </script>
+</body>
+</html>

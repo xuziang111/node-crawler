@@ -1,5 +1,4 @@
-﻿
-var http = require('http')
+﻿var http = require('http')
 var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
