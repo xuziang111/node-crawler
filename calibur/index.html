@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <div id="main" style="width: 600px;height:400px;"></div>
+
 
 
     <script src="echarts.js"></script>
@@ -22,30 +22,16 @@
     console.log(xxx.data.list[0].id)
     JSON.stringify(xxx)
     console.log(xxx)
-    var myChart = echarts.init(document.getElementById('main'));
-    var option = {
-    xAxis: {
-        type: 'category',
-        data: ['', '', '', '', '', '', 's']
-    },
-    yAxis: {
-        type: 'value'
-    },
-    series: [{
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line',
-        smooth: true
-    }]
-};
+
 let data=[]
 // let yyy = xxx.list[0].market_trend.value
 let fragment = document.createDocumentFragment();
 xxx.data.list.forEach(function(liste,listi){
     data.push({id:liste.name,trend:[]})
+    let tempmain = 'main'+listi
     var content = `<div id='${"main" + listi}' style="width: 300px;height:200px;"></div>`
     var objE = document.createElement("div");
     objE.innerHTML = content;
-    let tempmain = 'main'+listi
     fragment.appendChild(objE.childNodes[0])
     liste.market_trend.forEach(function(trende,trendi){
         data[listi].trend.push(trende)
@@ -53,10 +39,9 @@ xxx.data.list.forEach(function(liste,listi){
     })
 })
 
-console.log(data)
-        myChart.setOption(option);
+var bodye = document.querySelector('body')
+bodye.appendChild(fragment)
 data.forEach(function(e,index){
-    var bodye = document.querySelector('body')
     let temp_trend=[]
     for(let i=0;i<6;i++){
         if(e.trend[i]){
@@ -85,10 +70,10 @@ data.forEach(function(e,index){
     }]
 };
 
-var myChart = echarts.init(document.getElementById(tempmain))
+var myChart = echarts.init(document.getElementById('main'+index))
 myChart.setOption(option);
 })
-bodye.appendChild(fragment)
+
     </script>
 </body>
 </html>
