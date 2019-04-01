@@ -27,7 +27,7 @@ let getHotNews = (res) => {
   // 找到目标数据所在的页面元素，获取数据
   $('div#pane-news ul li a').each((idx, ele) => {
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
-    // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
+    // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素s
     let news = {
       title: $(ele).text(),        // 获取新闻标题
       href: $(ele).attr('href')    // 获取新闻网页链接
