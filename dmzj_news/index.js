@@ -6,6 +6,22 @@ var port = process.argv[2]
 const superagent= require('../node_modules/superagent');
 const cheerio = require('../node_modules/cheerio');
 var async = require('../node_modules/async')
+var mysql      = require('../node_modules/mysql');
+
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'zhaobsh',
+  password : 'Test163',
+  database : 'dmzj_news'
+});
+// (?,?,?,?,?,?,?,?,?)
+connection.connect();
+var  addSql = 'INSERT INTO dmzj(article_id,tittle,publish_source,href,publish_date,publish_author,img_src,local_article,abstract) VALUES ?';
+var  addSqlParams = [news.article_id,news.tittle,news.source,news.href,news.time,news.author,news.img,news.article_id,news.abstract];
+//增
+
+ 
+connection.end();
 
 let noteurls = []
 
@@ -26,13 +42,39 @@ let getNews = (res) => {
     // console.log(temp('h3 a').text())
     let news = {
       title: temp('h3 a').text(),        // 获取新闻标题
-      href: temp('h3 a').attr('href') ,   // 获取新闻网页链接
+      href: temp('h3 a').attr('href') ,
+      article_id:temp('h3 a').attr('href').slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
       time:temp('.head_con_p_o span:nth-child(1)').text() ,
       source:temp('.head_con_p_o span:nth-child(2)').text(),
-      pull:temp('.head_con_p_o span:nth-child(3)').text(),
+      author:temp('.head_con_p_o span:nth-child(3)').text(),
       abstract:temp('.com_about').text(),
       img:temp('.li_content_img a img' ).attr('src'),
+      
     };    
+
+    news.local_article = '/article'+ news.article_id
+
+    var  addSqlParams = [news.article_id,news.tittle,news.source,news.href,news.time,news.author,news.img,news.local_article,news.abstract];
+//增
+connection.query(addSql,addSqlParams,function (err, result) {
+        if(err){
+         console.log('[INSERT ERROR] - ',err.message);
+         return;
+        }        
+ 
+       console.log('--------------------------INSERT----------------------------');
+       //console.log('INSERT ID:',result.insertId);        
+       console.log('INSERT ID:',result);        
+       console.log('-----------------------------------------------------------------\n\n');  
+});
+
+fs.writeFile(news.local_article,news.article_id,'utf8',function(error){
+  if(error){
+      console.log(error);
+      return false;
+  }
+  console.log('写入成功'+i);
+})
 
     hotNews.push(news)              // 存入最终结果数组
   });
@@ -41,12 +83,14 @@ let getNews = (res) => {
 
 
 let j = 0
+
 for(let i=1;i<1300;i++){
   netpage = `https://news.dmzj.com/p${i}.html`
   noteurls.push(netpage)
   console.log(netpage)
 }
 let concurrencyCount = 0
+
 function savetext(noteurl,callback){
   console.time('  耗时');
         concurrencyCount++;
@@ -80,6 +124,14 @@ async.mapLimit(noteurls,1,function(noteurl,callback){
   console.log(err)
 })
 
+// connection.end();
+
+
+
+
+
+
+//--------------------------------------------------------
 if(!port){
   console.log('请指定端口号 例如\nnode server.js 8888')
   process.exit(1)

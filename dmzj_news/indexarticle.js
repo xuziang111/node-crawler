@@ -1,4 +1,4 @@
-﻿var http = require('http')
+var http = require('http')
 var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
@@ -6,55 +6,77 @@ var port = process.argv[2]
 const superagent= require('../node_modules/superagent');
 const cheerio = require('../node_modules/cheerio');
 var async = require('../node_modules/async')
+var mysql      = require('../node_modules/mysql');
+
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'zhaobsh',
+  password : 'Test163',
+  database : 'dmzj_news'
+});
+// (?,?,?,?,?,?,?,?,?)
+connection.connect();
+var  addSql = 'INSERT IGNORE INTO dmzj (article_id,tittle,publish_source,href,publish_date,publish_author,img_src,local_article,abstract) VALUES (?,?,?,?,?,?,?,?,?)';
+
+
+ 
 
 let noteurls = []
 
-let getNews = (res) => {
-  let hotNews = [];
+let getNews = (res,noteurl) => {
   // 访问成功，请求http://news.baidu.com/页面所返回的数据会包含在res.text中。
   
   /* 使用cheerio模块的cherrio.load()方法，将HTMLdocument作为参数传入函数
      以后就可以使用类似jQuery的$(selectior)的方式来获取页面元素
    */
-  let $ = cheerio.load(res.text);
+  let $ = cheerio.load(res.text, { decodeEntities: false });
 	
   // 找到目标数据所在的页面元素，获取数据
-  $('.briefnews_con_li').each((idx, ele) => {
+  $('.news_content_con').text()
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
     // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
-    let temp = cheerio.load(ele)
     // console.log(temp('h3 a').text())
-    let news = {
-      title: temp('h3 a').text(),        // 获取新闻标题
-      href: temp('h3 a').attr('href') ,   // 获取新闻网页链接
-      time:temp('.head_con_p_o span:nth-child(1)').text() ,
-      source:temp('.head_con_p_o span:nth-child(2)').text(),
-      pull:temp('.head_con_p_o span:nth-child(3)').text(),
-      abstract:temp('.com_about').text(),
-      img:temp('.li_content_img a img' ).attr('src'),
-    };    
+let news={}   
+    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
+    news.local_article = './article/'+ news.article_id
+console.log(news)
 
-    hotNews.push(news)              // 存入最终结果数组
-  });
-  return hotNews
+fs.mkdir(news.local_article,function(err){
+    if (err) {
+        return console.error(err);
+    }
+    console.log("目录创建成功。");
+ });
+
+//本地储存地址
+fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content_con').html(),'utf8',function(error){
+  if(error){
+      console.log(error);
+      return false;
+  }
+  console.log()
+  console.log('写入成功'+news.article_id);
+})
+
+
 };
 
 
-let j = 0
-for(let i=1;i<1300;i++){
-  netpage = `https://news.dmzj.com/p${i}.html`
+
+for(let i=1;i<61598;i++){
+  netpage = `https://news.dmzj.com/article/${i}.html`
   noteurls.push(netpage)
-  console.log(netpage)
 }
+
 let concurrencyCount = 0
+
 function savetext(noteurl,callback){
   console.time('  耗时');
         concurrencyCount++;
-        let i = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf("."))
   superagent.get(noteurl).end((err, res) => {
     if (err) {
       // 如果访问失败或者出错，会这行这里
-      console.log(`抓取失败 -${i}- ${err}`)
+      console.log(`抓取失败 - ${err}`)
       console.log('并发数:', concurrencyCount--, 'fetch');
       callback(null,err)
     } else {
@@ -62,24 +84,29 @@ function savetext(noteurl,callback){
       callback(null,[noteurl,res.text])
     //  let $ = cheerio.load(res.text);
     
-     fs.writeFile('data/'+i+'.json',JSON.stringify(getNews(res)),'utf8',function(error){
-      if(error){
-          console.log(error);
-          return false;
-      }
-      console.log('写入成功'+i);
-    })
+    
+    getNews(res,noteurl)
+
+
     }
   });
 }
 
-async.mapLimit(noteurls,1,function(noteurl,callback){
+async.mapLimit(noteurls,50,function(noteurl,callback){
   savetext(noteurl, callback)
   console.timeEnd("  耗时")
 },function(err,data){
   console.log(err)
 })
 
+// connection.end();
+
+
+
+
+
+
+//--------------------------------------------------------
 if(!port){
   console.log('请指定端口号 例如\nnode server.js 8888')
   process.exit(1)
