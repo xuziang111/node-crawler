@@ -1,3 +1,4 @@
+//根据数据库信息获取缩略图
 var http = require('http')
 var fs = require('fs')
 var url = require('url')
@@ -9,6 +10,16 @@ var async = require('../node_modules/async')
 var mysql      = require('../node_modules/mysql');
 var request = require('../node_modules/request');
 
+
+let pages = []
+
+
+fs.readFile('./dmzj.txt', 'utf8', function(err, data){
+    pages = JSON.stringify(data)
+});
+
+
+
 let allPage=[]
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -17,8 +28,22 @@ var connection = mysql.createConnection({
   database : 'dmzj_news'
 });
 // (?,?,?,?,?,?,?,?,?)
+var modSql = 'UPDATE dmzj SET oage_img = ? WHERE Id = ?';
+var modSqlParams = ['菜鸟移动站', 'https://m.runoob.com',6];
+
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_a (article_id,tittle,publish_source,href,publish_date,publish_author,abstract_img,local_article,abstract,page_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
+
+connection.query(modSql,modSqlParams,function (err, result) {
+    if(err){
+          console.log('[UPDATE ERROR] - ',err.message);
+          return;
+    }        
+   console.log('--------------------------UPDATE----------------------------');
+   console.log('UPDATE affectedRows',result.affectedRows);
+   console.log('-----------------------------------------------------------------\n\n');
+ });
+  
+
 
 function savepage(news){
     mkfile(news)
@@ -51,16 +76,6 @@ let mkfile = (news)=>{
      });
 }
 
-// let mkarticle = (path,content)=>{
-//     fs.writeFile(path,content,'utf8',function(error){
-//         if(error){
-//             console.log(error);
-//             return false;
-//         }
-//         // console.log()
-//         // console.log('写入成功'+news.article_id);
-//       })
-// }
 
 let noteurls = []
 
@@ -104,17 +119,15 @@ let getNews = (res) => {
 
     
     //插入数据库
-connection.query(addSql,addSqlParams,function (err, result) {
+    connection.query(modSql,modSqlParams,function (err, result) {
         if(err){
-         console.log('[INSERT ERROR] - ',err.message);
-         return;
+              console.log('[UPDATE ERROR] - ',err.message);
+              return;
         }        
- 
-       console.log('--------------------------INSERT----------------------------');
-       //console.log('INSERT ID:',result.insertId);        
-       console.log('INSERT ID:',result);        
-       console.log('-----------------------------------------------------------------\n\n');  
-});
+       console.log('--------------------------UPDATE----------------------------');
+       console.log('UPDATE affectedRows',result.affectedRows);
+       console.log('-----------------------------------------------------------------\n\n');
+     });
 //本地储存地址
 
 
@@ -123,11 +136,11 @@ connection.query(addSql,addSqlParams,function (err, result) {
 
 
 
-for(let i=1;i<1300;i++){
-  netpage = `https://news.dmzj.com/p${i}.html`
-  noteurls.push(netpage)
-  console.log(netpage)
-}
+pages.forEach(function(item){
+    netpage = `https://news.dmzj.com/article/${item}.html`
+    noteurls.push(netpage)
+    console.log(netpage)
+})
 
 let concurrencyCount = 0
 
@@ -153,12 +166,12 @@ function savetext(noteurl,callback){
   });
 }
 
-async.mapLimit(noteurls,1,function(noteurl,callback){
-  savetext(noteurl, callback)
-  console.timeEnd("  耗时")
-},function(err,data){
-  console.log(err)
-})
+async.mapLimit(pages,1,function(noteurl,callback){
+    savetext(noteurl, callback)
+    console.timeEnd("  耗时")
+  },function(err,data){
+    console.log(err)
+  })
 
 // connection.end();
 
