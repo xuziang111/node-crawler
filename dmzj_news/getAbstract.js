@@ -86,7 +86,7 @@ let getNews = (res) => {
   /* 使用cheerio模块的cherrio.load()方法，将HTMLdocument作为参数传入函数
      以后就可以使用类似jQuery的$(selectior)的方式来获取页面元素
    */
-  let $ = cheerio.load(res.text);
+  let $ = cheerio.load(res.text, { decodeEntities: false });
 	
   // 找到目标数据所在的页面元素，获取数据
   $('.briefnews_con_li').each((idx, ele) => {
@@ -95,13 +95,7 @@ let getNews = (res) => {
     let temp = cheerio.load(ele)
     // console.log(temp('h3 a').text())
     let news = {
-      tittle: temp('h3 a').text(),        // 获取新闻标题
-      href: temp('h3 a').attr('href') ,
-      time:temp('.head_con_p_o span:nth-child(1)').text() ,
-      source:temp('.head_con_p_o span:nth-child(2)').text(),
-      author:temp('.head_con_p_o span:nth-child(3)').text(),
-      abstract:temp('.com_about').text(),
-      img:temp('.li_content_img a img' ).attr('src'),     
+ 
     };    
     news.article_id = news.href.slice(news.href.lastIndexOf("/")+1,news.href.lastIndexOf(".")),  // 获取新闻网页链接
     news.local_article = './article/'+ news.article_id+'/'+news.article_id
@@ -110,14 +104,7 @@ let getNews = (res) => {
     //创建储存文件夹
 
     savepage(news)
-
-
-
-    // let content = ''
-    // mkarticle(news.local_article,content)
-
-
-    
+   
     //插入数据库
     connection.query(modSql,modSqlParams,function (err, result) {
         if(err){
@@ -128,6 +115,7 @@ let getNews = (res) => {
        console.log('UPDATE affectedRows',result.affectedRows);
        console.log('-----------------------------------------------------------------\n\n');
      });
+
 //本地储存地址
 
 

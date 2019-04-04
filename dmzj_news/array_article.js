@@ -34,6 +34,7 @@ connection.query(sql,function (err, result) {
     allPage.push(ele.article_id)
    })
    console.log(allPage)
+   
    console.log('------------------------------------------------------------\n\n');  
 });
 

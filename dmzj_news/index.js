@@ -1,21 +1,16 @@
-﻿var http = require('http')
+﻿    
+var http = require('http')
 var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
 // 引入所需要的第三方包
-const superagent= require('superagent');
-const cheerio = require('cheerio');
+const superagent= require('../node_modules/superagent');
+const cheerio = require('../node_modules/cheerio');
+var async = require('../node_modules/async')
 
-let alljson = []//获取本地的json
-	fs.readFile('data/result.json', function (err, data) {
-   if (err) {
-       return console.error(err);
-   }
-   alljson = JSON.parse(data)
-});
+let noteurls = []
 
-
-let getHotNews = (res) => {
+let getNews = (res) => {
   let hotNews = [];
   // 访问成功，请求http://news.baidu.com/页面所返回的数据会包含在res.text中。
   
@@ -25,35 +20,66 @@ let getHotNews = (res) => {
   let $ = cheerio.load(res.text);
 	
   // 找到目标数据所在的页面元素，获取数据
-  $('div#pane-news ul li a').each((idx, ele) => {
+  $('.briefnews_con_li').each((idx, ele) => {
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
-    // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素s
+    // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
+    let temp = cheerio.load(ele)
+    // console.log(temp('h3 a').text())
     let news = {
-      title: $(ele).text(),        // 获取新闻标题
-      href: $(ele).attr('href')    // 获取新闻网页链接
+      title: temp('h3 a').text(),        // 获取新闻标题
+      href: temp('h3 a').attr('href') ,   // 获取新闻网页链接
+      time:temp('.head_con_p_o span:nth-child(1)').text() ,
+      source:temp('.head_con_p_o span:nth-child(2)').text(),
+      pull:temp('.head_con_p_o span:nth-child(3)').text(),
+      abstract:temp('.com_about').text(),
+      img:temp('.li_content_img a img' ).attr('src'),
     };    
-	alljson.push(news)
+
     hotNews.push(news)              // 存入最终结果数组
   });
   return hotNews
 };
 
-var hotNews = [];                                // 热点新闻
-var localNews = [];                              // 本地新闻
-superagent.get('http://news.baidu.com/').end((err, res) => {
-  if (err) {
-    // 如果访问失败或者出错，会这行这里
-    console.log(`热点新闻抓取失败 - ${err}`)
-  } else {
-   // 访问成功，请求http://news.baidu.com/页面所返回的数据会包含在res
-   // 抓取热点新闻数据
-   hotNews = getHotNews(res)
-   console.log(hotNews)
-   fs.appendFile('data/result.json', JSON.stringify(alljson) ,'utf-8', function (err) {
-        if(err) throw new Error("appendFile failed...");
-    });
-  }
-});
+
+let j = 0
+for(let i=1;i<1300;i++){
+  netpage = `https://news.dmzj.com/p${i}.html`
+  noteurls.push(netpage)
+  console.log(netpage)
+}
+let concurrencyCount = 0
+function savetext(noteurl,callback){
+  console.time('  耗时');
+        concurrencyCount++;
+        let i = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf("."))
+  superagent.get(noteurl).end((err, res) => {
+    if (err) {
+      // 如果访问失败或者出错，会这行这里
+      console.log(`抓取失败 -${i}- ${err}`)
+      console.log('并发数:', concurrencyCount--, 'fetch');
+      callback(null,err)
+    } else {
+      console.log('并发数:', concurrencyCount--, 'fetch');
+      callback(null,[noteurl,res.text])
+    //  let $ = cheerio.load(res.text);
+    
+     fs.writeFile('data/'+i+'.json',JSON.stringify(getNews(res)),'utf8',function(error){
+      if(error){
+          console.log(error);
+          return false;
+      }
+      console.log('写入成功'+i);
+    })
+    }
+  });
+}
+
+async.mapLimit(noteurls,1,function(noteurl,callback){
+  savetext(noteurl, callback)
+  console.timeEnd("  耗时")
+},function(err,data){
+  console.log(err)
+})
 
 if(!port){
   console.log('请指定端口号 例如\nnode server.js 8888')
@@ -65,7 +91,7 @@ var server = http.createServer(function(request, response){
      // 输出响应头
      response.writeHead (200, {'Content-Type' : 'text/html;charset=utf-8'});
      // 写内容
-     response.write(hotNews[0].title.toString('utf-8'));
+     response.write('xxx'.toString('utf-8'));
      // 结束，如果不写，请求一直处于pedding状态，可注释做测试
      response.end();
 
