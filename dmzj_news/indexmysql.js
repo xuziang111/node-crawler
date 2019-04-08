@@ -13,12 +13,12 @@ let allPage=[]
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'zhaobsh',
-  password : 'Test163',
-  database : 'dmzj_news'
+  password : 'Test6530',
+  database : 'dmzj'
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_a (article_id,tittle,publish_source,href,publish_date,publish_author,abstract_img,local_article,abstract,page_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
+var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
 
 function savepage(news){
     mkfile(news)
@@ -137,7 +137,7 @@ function savetext(noteurl,callback){
   superagent.get(noteurl).end((err, res) => {
     if (err) {
       // 如果访问失败或者出错，会这行这里
-      console.log(`抓取失败 -${i}- ${err}`)
+      console.log(`抓取失败 - ${err}`)
       console.log('并发数:', concurrencyCount--, 'fetch');
       callback(null,err)
     } else {

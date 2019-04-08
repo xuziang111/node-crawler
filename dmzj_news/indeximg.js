@@ -7,6 +7,7 @@ const superagent= require('../node_modules/superagent');
 const cheerio = require('../node_modules/cheerio');
 var async = require('../node_modules/async')
 var mysql      = require('../node_modules/mysql');
+var request = require('../node_modules/request');
 
 var connection = mysql.createConnection({
   host     : 'localhost',
@@ -16,7 +17,7 @@ var connection = mysql.createConnection({
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract) VALUES (?,?,?,?,?,?,?,?,?)';
+var  addSql = 'INSERT IGNORE INTO dmzj_news (article_img) VALUES (?)';
 
 
  
@@ -30,35 +31,41 @@ let getNews = (res,noteurl) => {
      以后就可以使用类似jQuery的$(selectior)的方式来获取页面元素
    */
   let $ = cheerio.load(res.text, { decodeEntities: false });
-	
+    
+  let news={}   
+    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
+    news.local_article = './article/'+ news.article_id
+
   // 找到目标数据所在的页面元素，获取数据
-  $('.news_content_con').text()
+  $('.news_content_con img').each((idx, ele) => {
+    // fs.mkdir(news.local_article,function(err){
+    //     if (err) {
+    //         return console.error(err);
+    //     }
+    //     console.log("目录创建成功。");
+    //  });
+    var temp = cheerio.load(ele)
+    
+    if(ele.attribs.src.indexOf('images.dmzj.com/resource/news/')){
+        console.log(ele.attribs.src)
+        var src = {url:ele.attribs.src,
+            headers:{
+                'Referer':`https://news.dmzj.com`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+            }
+            }
+        var writeStream = fs.createWriteStream(`${news.article_id}/${idx}.jpg`);
+        var readStream = request(src)
+    
+            readStream.pipe(writeStream); 
+    }
+    // console.log(temp)
+ 
+   
+  });
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
     // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
     // console.log(temp('h3 a').text())
-let news={}   
-    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
-    news.local_article = './article/'+ news.article_id
-console.log(news)
-if($('.news_content_con').text()){
-  fs.mkdir(news.local_article,function(err){
-    if (err) {
-        return console.error(err);
-    }
-    console.log("目录创建成功。");
- });
-
-//本地储存地址
-fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content_con').html(),'utf8',function(error){
-  if(error){
-      console.log(error);
-      return false;
-  }
-  console.log()
-  console.log('写入成功'+news.article_id);
-})
-}
-
 
 
 };
