@@ -45,19 +45,21 @@ let getNews = (res,noteurl) => {
     //     console.log("目录创建成功。");
     //  });
     var temp = cheerio.load(ele)
-    
-    if(ele.attribs.src.indexOf('images.dmzj.com/resource/news/')){
+    if(ele.attribs.src){
+      if(ele.attribs.src.indexOf('images.dmzj.com/resource/news/') !== -1){
         console.log(ele.attribs.src)
         var src = {url:ele.attribs.src,
             headers:{
+              'method': 'GET',
                 'Referer':`https://news.dmzj.com`,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
             }
             }
-        var writeStream = fs.createWriteStream(`${news.article_id}/${idx}.jpg`);
+        var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.jpg`);
         var readStream = request(src)
-    
+            console.log(news.article_id )
             readStream.pipe(writeStream); 
+    }
     }
     // console.log(temp)
  
@@ -72,7 +74,7 @@ let getNews = (res,noteurl) => {
 
 
 
-for(let i=140;i<61700;i++){
+for(let i=984;i<61800;i++){
   netpage = `https://news.dmzj.com/article/${i}.html`
   noteurls.push(netpage)
 }
@@ -101,7 +103,7 @@ function savetext(noteurl,callback){
   });
 }
 
-async.mapLimit(noteurls,50,function(noteurl,callback){
+async.mapLimit(noteurls,1,function(noteurl,callback){
   savetext(noteurl, callback)
   console.timeEnd("  耗时")
 },function(err,data){

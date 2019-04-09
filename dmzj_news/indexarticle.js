@@ -16,31 +16,73 @@ var connection = mysql.createConnection({
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract) VALUES (?,?,?,?,?,?,?,?,?)';
+var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img,type) VALUES (?,?,?,?,?,?,NULL,?,?,NULL,?)';
 
+var modSql = 'UPDATE dmzj_news SET type = ? WHERE article_id = ?';
 
- 
 
 let noteurls = []
 
 let getNews = (res,noteurl) => {
-  // 访问成功，请求http://news.baidu.com/页面所返回的数据会包含在res.text中。
+  // 访问成功，请求页面所返回的数据会包含在res.text中。
   
   /* 使用cheerio模块的cherrio.load()方法，将HTMLdocument作为参数传入函数
      以后就可以使用类似jQuery的$(selectior)的方式来获取页面元素
    */
   let $ = cheerio.load(res.text, { decodeEntities: false });
-	
-  // 找到目标数据所在的页面元素，获取数据
-  $('.news_content_con').text()
-    // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
-    // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
-    // console.log(temp('h3 a').text())
-let news={}   
+
+	let news={}   
     news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
     news.local_article = './article/'+ news.article_id
+
+  // 找到目标数据所在的页面元素，获取数据
+  $('.news_content_info_r').remove()
+  $('.bd_share').remove() 
+  //id news.article_id
+  let type = $('.bq_ico').text()
+    let tittle = $('.news_content_head h1').text()
+    let publish_source = $('.data_from').text()
+    let href = noteurl
+    let date = $('.data_time').text()
+
+    let author = $('.issuer_con span h3 a').text()
+    let abstract = $('.news_content_con p:nth-child(1)').text().trim()
+
+  var  addSqlParams = [news.article_id,tittle,publish_source,href,date,author,news.local_article,abstract,type]
+  var modSqlParams = [type,news.article_id];
+console.log(addSqlParams)
+
 console.log(news)
-if($('.news_content_con').text()){
+
+//插入
+connection.query(addSql,addSqlParams,function (err, result) {
+  if(err){
+   console.log('[INSERT ERROR] - ',err.message);
+   return;
+  }        
+
+ console.log('--------------------------INSERT----------------------------');
+ //console.log('INSERT ID:',result.insertId);        
+ console.log('INSERT ID:',result);        
+ console.log('-----------------------------------------------------------------\n\n');  
+});
+//更新
+connection.query(modSql,modSqlParams,function (err, result) {
+  if(err){
+    console.log('[INSERT ERROR] - ',err.message);
+    return;
+   }        
+ 
+  console.log('--------------------------INSERT----------------------------');
+  //console.log('INSERT ID:',result.insertId);        
+  console.log('INSERT ID:',result);        
+  console.log('-----------------------------------------------------------------\n\n');  
+ });
+
+
+
+ 
+if($('.news_content').text()){
   fs.mkdir(news.local_article,function(err){
     if (err) {
         return console.error(err);
@@ -49,7 +91,7 @@ if($('.news_content_con').text()){
  });
 
 //本地储存地址
-fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content_con').html(),'utf8',function(error){
+fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content').html(),'utf8',function(error){
   if(error){
       console.log(error);
       return false;
@@ -65,7 +107,7 @@ fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content_con').
 
 
 
-for(let i=140;i<61700;i++){
+for(let i=60450;i<61800;i++){
   netpage = `https://news.dmzj.com/article/${i}.html`
   noteurls.push(netpage)
 }
