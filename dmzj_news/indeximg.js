@@ -73,8 +73,12 @@ let getNews = (res,noteurl) => {
 };
 
 
+//12900
+//14372
+//45355
+//46796
 
-for(let i=984;i<61800;i++){
+for(let i=61708;i<=61713;i++){
   netpage = `https://news.dmzj.com/article/${i}.html`
   noteurls.push(netpage)
 }
