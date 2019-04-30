@@ -28,8 +28,8 @@ let articles = Vue.component('articles',{
               });
       },
         ajaxsuccess:function(data){
-            console.log(data)
-            console.log($(data))
+
+            
           this.content = data
         }
     },
@@ -39,6 +39,7 @@ let articles = Vue.component('articles',{
         // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
         // 可以访问组件实例 `this`
         console.log(to.params.id)
+        this.id=to.params.id
         this.getArticle({page:'article',part:to.params.id})
       },
     created:function(){

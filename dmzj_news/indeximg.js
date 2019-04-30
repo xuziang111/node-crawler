@@ -9,15 +9,15 @@ var async = require('../node_modules/async')
 var mysql      = require('../node_modules/mysql');
 var request = require('../node_modules/request');
 
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'zhaobsh',
-  password : 'Test6530',
-  database : 'dmzj'
-});
-// (?,?,?,?,?,?,?,?,?)
-connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_news (article_img) VALUES (?)';
+// var connection = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'zhaobsh',
+//   password : 'Test6530',
+//   database : 'dmzj'
+// });
+// // (?,?,?,?,?,?,?,?,?)
+// connection.connect();
+// var  addSql = 'INSERT IGNORE INTO dmzj_news (article_img) VALUES (?)';
 
 
  
@@ -31,45 +31,92 @@ let getNews = (res,noteurl) => {
      以后就可以使用类似jQuery的$(selectior)的方式来获取页面元素
    */
   let $ = cheerio.load(res.text, { decodeEntities: false });
+  let img_type=[]
+
+//   console.log('res.text')
+// console.log(res.text)
     
   let news={}   
-    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf(".")),  // 获取新闻网页链接
+    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf("_")),  // 获取新闻网页链接
     news.local_article = './article/'+ news.article_id
-
+    fs.mkdir(news.local_article,function(err){
+        if (err) {
+            return console.error(err);
+        }
+        console.log("目录创建成功。");
+     });
+    $('.news_content_info_r').remove()
+    $('.bd_share').remove() 
+    console.log(1)
+    console.log($('.news_content_con').html())
   // 找到目标数据所在的页面元素，获取数据
   $('.news_content_con img').each((idx, ele) => {
-    // fs.mkdir(news.local_article,function(err){
-    //     if (err) {
-    //         return console.error(err);
-    //     }
-    //     console.log("目录创建成功。");
-    //  });
-    var temp = cheerio.load(ele)
     if(ele.attribs.src){
-      if(ele.attribs.src.indexOf('images.dmzj.com/resource/news/') !== -1){
-        console.log(ele.attribs.src)
-        var src = {url:ele.attribs.src,
-            headers:{
-              'method': 'GET',
-                'Referer':`https://news.dmzj.com`,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
-            }
-            }
-        var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.jpg`);
-        var readStream = request(src)
-            console.log(news.article_id )
-            readStream.pipe(writeStream); 
+// try{
+  // console.log(ele.attribs.src)
+
+  var src = {url:ele.attribs.src,
+      headers:{
+        'method': 'GET',
+          'Referer':`https://news.dmzj.com`,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+      }
+      }
+      let img_name = ele.attribs.src.slice(ele.attribs.src.lastIndexOf(".")+1)
+      // console.log(img_name)
+      img_type.push(img_name)
+  var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.${img_name}`);
+  var readStream = request(src)
+      // console.log(news.article_id )
+      readStream.pipe(writeStream);
+      process.on('uncaughtException', function (err) {
+
+      });
+      // console.log('c')
+      // console.log(img_type) 
+// }catch(e){
+//   console.log(e)
+// }
+   
     }
-    }
+    
     // console.log(temp)
  
    
   });
+  console.log(2)
+  console.log($('.news_content_con').html())
+
+//   console.log('1')
+
+//   console.log($('.news_content').html())
+//   console.log('x')
+// console.log($('.news_content img'))
+  Array.prototype.forEach.call($('.news_content img'),function(ele,index){
+    console.log('z')
+    console.log(img_type[index])
+    $(ele).attr('src',`./article/${news.article_id}/${index}.${img_type[index]}`)
+    $(ele).attr('title',index)
+    $(ele).attr('alt',index)
+    // console.log(ele)
+})
     // cherrio中$('selector').each()用来遍历所有匹配到的DOM元素
     // 参数idx是当前遍历的元素的索引，ele就是当前便利的DOM元素
     // console.log(temp('h3 a').text())
+    // console.log('2')
+    // console.log($('.news_content').html())
 
 
+
+
+    fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content').html(),'utf8',function(error){
+      if(error){
+          console.log(error);
+          return false;
+      }
+      console.log()
+      console.log('写入成功'+news.article_id);
+    })
 };
 
 
@@ -78,8 +125,8 @@ let getNews = (res,noteurl) => {
 //45355
 //46796
 
-for(let i=61708;i<=61713;i++){
-  netpage = `https://news.dmzj.com/article/${i}.html`
+for(let i=61798;i<=61800;i++){
+  netpage = `https://news.dmzj.com/article/${i}_all.html`
   noteurls.push(netpage)
 }
 
@@ -107,7 +154,7 @@ function savetext(noteurl,callback){
   });
 }
 
-async.mapLimit(noteurls,1,function(noteurl,callback){
+async.mapLimit(noteurls,2,function(noteurl,callback){
   savetext(noteurl, callback)
   console.timeEnd("  耗时")
 },function(err,data){
@@ -122,32 +169,32 @@ async.mapLimit(noteurls,1,function(noteurl,callback){
 
 
 //--------------------------------------------------------
-if(!port){
-  console.log('请指定端口号 例如\nnode server.js 8888')
-  process.exit(1)
-}
-var server = http.createServer(function(request, response){
-	console.log(request.url)
+// if(!port){
+//   console.log('请指定端口号 例如\nnode server.js 8888')
+//   process.exit(1)
+// }
+// var server = http.createServer(function(request, response){
+// 	console.log(request.url)
 
-     // 输出响应头
-     response.writeHead (200, {'Content-Type' : 'text/html;charset=utf-8'});
-     // 写内容
-     response.write('xxx'.toString('utf-8'));
-     // 结束，如果不写，请求一直处于pedding状态，可注释做测试
-     response.end();
+//      // 输出响应头
+//      response.writeHead (200, {'Content-Type' : 'text/html;charset=utf-8'});
+//      // 写内容
+//      response.write('xxx'.toString('utf-8'));
+//      // 结束，如果不写，请求一直处于pedding状态，可注释做测试
+//      response.end();
 
-function readBody(request){
-  return new Promise((resolve,reject) => {
-    let body = [];
-    request.on('data',(chunk) => {
-      body.push(chunk)
-    }).on('end',() => {
-    body = Buffer.concat(body).toString();
-    resolve(body)
-    })
-  })
-}
-})
+// function readBody(request){
+//   return new Promise((resolve,reject) => {
+//     let body = [];
+//     request.on('data',(chunk) => {
+//       body.push(chunk)
+//     }).on('end',() => {
+//     body = Buffer.concat(body).toString();
+//     resolve(body)
+//     })
+//   })
+// }
+// })
 
-server.listen(port)
-console.log('监听 ' + port + ' 成功\n请打开 http://localhost:' + port)
+// server.listen(port)
+// console.log('监听 ' + port + ' 成功\n请打开 http://localhost:' + port)

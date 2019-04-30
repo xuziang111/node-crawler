@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
+var  addSql = 'INSERT IGNORE INTO dmzj_abstract (article_id,title,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
 
 function savepage(news){
     mkfile(news)
@@ -31,9 +31,11 @@ let mkfile = (news)=>{
     allPage.push(news.href)
 
     fs.mkdir(artilce_dir,function(err){
-        if (err) {
-            return console.error(err);
-        }
+        // if (err) {
+          
+        //     return console.error(err);
+            
+        // }
         //储存文章
         // mkarticle(news.local_article,content)
 
@@ -83,8 +85,8 @@ let getNews = (res) => {
       tittle: temp('h3 a').text(),        // 获取新闻标题
       href: temp('h3 a').attr('href') ,
       time:temp('.head_con_p_o span:nth-child(1)').text() ,
-      source:temp('.head_con_p_o span:nth-child(2)').text(),
-      author:temp('.head_con_p_o span:nth-child(3)').text(),
+      source:temp('.head_con_p_o span:nth-child(2)').text().slice(3),
+      author:temp('.head_con_p_o span:nth-child(3)').text().slice(3),
       abstract:temp('.com_about').text(),
       img:temp('.li_content_img a img' ).attr('src'),     
     };    

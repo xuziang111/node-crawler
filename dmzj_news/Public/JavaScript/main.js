@@ -2,7 +2,7 @@
     leftresize()
     $(window).on('scroll',function(){
         let wwidth = $(window).width()
-        if(wwidth-1200>0){
+        if(wwidth-1300>0){
             $(".tab-bar").css({'left':`${(wwidth-1120)/2}px`})
         }else{
             $(".tab-bar").css({'left':`${-$(window).scrollLeft()}px`})
@@ -10,7 +10,7 @@
     })
     function leftresize(){
         let wwidth = $(window).width()
-        if(wwidth-1200>0){
+        if(wwidth-1300>0){
             $(".tab-bar").css({'left':`${(wwidth-1120)/2}px`})
         }else{
             $(".tab-bar").css({'left':'0'})
@@ -36,6 +36,7 @@
         el:'#body-container',
         router,
         data:{
+            isloading:false,
             ifcreated:{index:0,anime:0,hot:0},
             pagedatas:{
                 //hot {href:'点击文章链接',title:'标题,date:'日期'}
@@ -50,7 +51,7 @@
                     article:[],
                     num:2,
                 },
-                anime:{article:[{title:'',img:'',abstract:'',date:'',source:'',type:''}],num:10}
+                anime:{article:[{title:'',img:'',abstract:'',date:'',source:'',type:''}],num:1}
             },
         },
         methods:{
@@ -73,7 +74,12 @@
                     url: url,
                     success: function(data){
                         this.e = e
+                        data.forEach(function(e,index){
+                            e.img_abstract = `/article/${e.article_id}/abstract.jpg`
+                            console.log(e.img_abstract)
+                        })
                         _temp.ajaxsuccess(data,e)
+                        _temp.isLoading = false
                     },
                     error:function(xxx){
                         let data = [{title:'东京动画奖2019”年度最佳动画作品奖与个人奖结果发表',href:'/article/61098',img:'/Images/66474729_p0.jpg',abstract:'东京动画奖2019（TAAF2019）”的“年度最佳动画部门”作品奖与个人奖结果发表了。',date:'2019-2-21',source:'dmzj',type:'动画'},
@@ -83,7 +89,13 @@
                         this.e = e
                         console.log(e)
                         _temp.ajaxsuccess(data,e)
+                        _temp.isLoading = false
                     },
+                    complete:function(){
+                        console.log('xxx')
+                        bodyContainer.isLoading = false
+                        console.log(_temp.isLoading)
+                    }
                 });
             },
             ajaxsuccess:function(data,e){
@@ -95,24 +107,29 @@
                     this.pagedatas[e.page].num++
                 }
             },
+            
         },
-        created:function(){
+        mounted:function(){
             let _temp = this
             let path
             $(window).on('scroll',function(){
-                console.log(_temp.$route.path)
-                // console.log($(".article-content").height())
-                // console.log($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top))
-                if(_temp.$route.path === '/'){
-                    path = 'index'
-                }else{
-                    path = _temp.$route.path.slice(1)
-                }
-                if($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top)>-200){
-                    // console.log('xxx')
-                    // console.log(path)
-                    _temp.ajaxstart({page:path,part:'article',num:_temp.pagedatas[path].num})
-                }
+                // console.log(_temp.isLoading)
+                // // console.log($(".article-content").height())
+                // // console.log($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top))
+                // if(_temp.$route.path === '/'){
+                //     path = 'index'
+                // }else{
+                //     path = _temp.$route.path.slice(1)
+                // }
+                // if(_temp.isLoading==false){
+                //     _temp.isLoading = true
+                //     if($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top)>-200){
+                //         // console.log('xxx')
+                //         // console.log(path)
+                //         _temp.ajaxstart({page:path,part:'article',num:_temp.pagedatas[path].num})
+                //     }
+                // }
+                
             })
         }
     }).$mount('#body-container')

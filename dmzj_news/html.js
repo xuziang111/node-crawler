@@ -3,9 +3,12 @@ var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
 
+var mysql      = require('../node_modules/mysql');
 const express = require('../node_modules/express')
 const app = express()
 app.use('/',express.static('Public'))
+app.use(express.static(__dirname));
+
 
 app.listen(8080, () => {
     console.log(`App listening at port 8080`)
@@ -15,9 +18,51 @@ app.listen(8080, () => {
     res.send(string)
   })
   app.get('/article/:id', (req, res) => {
-    let string = fs.readFileSync(`./article/${req.params.id}/${req.params.id}`,'utf-8')
-    res.send(string)
+    let string
+    try{
+      string = fs.readFileSync(`./article/${req.params.id}/${req.params.id}`,'utf-8')
+      res.send(string)
+    }catch(err){
+      console.log(err)
+      res.send(`<h1>该新闻还未审核通过或已被删除</h1>`)
+    }
+
+  })  
+  app.get('/index/article/:id', (req, res) => {
+    console.log(req.params) 
+    console.log(req.path)
+    let xxx = req.path.split('/')
+    console.log(xxx[1])
+    let searchPar
+
+
+    var connection = mysql.createConnection({
+      host     : 'localhost',
+      user     : 'zhaobsh',
+      password : 'Test6530',
+      database : 'dmzj'
+    });
+    // (?,?,?,?,?,?,?,?,?)
+    connection.connect();
+    var  sql = `select * from dmzj_abstract limit ${(req.params.id-1)*10}, 10;`;
+
+   connection.query(sql,function (err, result) {
+        if(err){
+          console.log('[SELECT ERROR] - ',err.message);
+          return;
+        }
+ 
+       console.log('--------------------------SELECT----------------------------');
+       searchPar = result;
+       res.send(searchPar)
+       console.log('------------------------------------------------------------\n\n');  
+});
+
+    connection.end();
+
+
   })
+
 
 if(!port){
   console.log('请指定端口号 例如\nnode server.js 8888')

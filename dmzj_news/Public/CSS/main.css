@@ -1,5 +1,5 @@
 #body-container,#tf-home,#overly{
-    min-width:1200px;
+    min-width:1300px;
 }
 #tf-home .overlay{
     min-height:100vh;
@@ -115,9 +115,15 @@ width:680px;
     padding-right:5px;
 }
 .articles{
-    text-indent:2em;
+    /* text-indent:2em; */
     padding:10px;
 }
 .articles h1{
     text-align: center;
+}
+main.page-content >div>div{
+    min-width:800px;
+}
+img{
+    max-width:100% !important;
 }
