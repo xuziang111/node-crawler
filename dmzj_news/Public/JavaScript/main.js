@@ -2,7 +2,7 @@
     leftresize()
     $(window).on('scroll',function(){
         let wwidth = $(window).width()
-        if(wwidth-1300>0){
+        if(wwidth-1200>0){
             $(".tab-bar").css({'left':`${(wwidth-1120)/2}px`})
         }else{
             $(".tab-bar").css({'left':`${-$(window).scrollLeft()}px`})
@@ -10,7 +10,7 @@
     })
     function leftresize(){
         let wwidth = $(window).width()
-        if(wwidth-1300>0){
+        if(wwidth-1200>0){
             $(".tab-bar").css({'left':`${(wwidth-1120)/2}px`})
         }else{
             $(".tab-bar").css({'left':'0'})
@@ -36,7 +36,7 @@
         el:'#body-container',
         router,
         data:{
-            isloading:false,
+            isLoading:false,
             ifcreated:{index:0,anime:0,hot:0},
             pagedatas:{
                 //hot {href:'点击文章链接',title:'标题,date:'日期'}
@@ -49,9 +49,9 @@
                     ],
                     //{title:'标题',img:'图片地址',abstract:'简介/第一段文字',date:'日期',source:'来源',type:'分类'}
                     article:[],
-                    num:2,
+                    num:1,
                 },
-                anime:{article:[{title:'',img:'',abstract:'',date:'',source:'',type:''}],num:1}
+                anime:{article:[{title:'',img:'',abstract:'',date:'',source:'',type:''}],num:10}
             },
         },
         methods:{
@@ -69,15 +69,16 @@
                     url = `${e.page}/${e.part}`
                 }
                 let _temp = this
+                console.log(url)
                 $.ajax({
                     type:'get',
                     url: url,
                     success: function(data){
-                        this.e = e
                         data.forEach(function(e,index){
                             e.img_abstract = `/article/${e.article_id}/abstract.jpg`
-                            console.log(e.img_abstract)
+                            e.href='/article/' + e.article_id
                         })
+                        this.e = e
                         _temp.ajaxsuccess(data,e)
                         _temp.isLoading = false
                     },
@@ -91,46 +92,57 @@
                         _temp.ajaxsuccess(data,e)
                         _temp.isLoading = false
                     },
-                    complete:function(){
-                        console.log('xxx')
-                        bodyContainer.isLoading = false
-                        console.log(_temp.isLoading)
-                    }
+                    
                 });
             },
             ajaxsuccess:function(data,e){
-                if(!e.num||e.num===1){
-                    this.pagedatas[e.page][e.part] = data
-                    this.ifcreated[e.page]=1
-                }else{
-                    this.pagedatas[e.page][e.part]=this.pagedatas[e.page][e.part].concat(data)
-                    this.pagedatas[e.page].num++
-                }
+                console.log(data)
+                console.log(e)
+                this.pagedatas[e.page][e.part]=this.pagedatas[e.page][e.part].concat(data)
+                this.pagedatas[e.page].num++
+                // if(!e.num||e.num===1){
+                //     this.pagedatas[e.page][e.part] = data
+                //     this.ifcreated[e.page]=1
+                // }else{
+                //     this.pagedatas[e.page][e.part]=this.pagedatas[e.page][e.part].concat(data)
+                //     this.pagedatas[e.page].num++
+                // }
             },
-            
         },
         mounted:function(){
             let _temp = this
             let path
+            console.log(this.pagedatas.index.num)
             $(window).on('scroll',function(){
-                // console.log(_temp.isLoading)
-                // // console.log($(".article-content").height())
-                // // console.log($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top))
-                // if(_temp.$route.path === '/'){
-                //     path = 'index'
-                // }else{
-                //     path = _temp.$route.path.slice(1)
-                // }
-                // if(_temp.isLoading==false){
-                //     _temp.isLoading = true
-                //     if($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top)>-200){
-                //         // console.log('xxx')
-                //         // console.log(path)
-                //         _temp.ajaxstart({page:path,part:'article',num:_temp.pagedatas[path].num})
-                //     }
-                // }
-                
+                if(_temp.$route.path === '/'){
+                    path = 'index'
+                }else{
+                    path = _temp.$route.path.slice(1)
+                }         
+                if(_temp.isLoading==false){
+                    if($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top)>-200){
+                        console.log(_temp.pagedatas.index)
+                        _temp.isLoading = true
+                        _temp.ajaxstart({page:'index',part:'article',num:_temp.pagedatas[path].num})
+                    }
+                }   
             })
+
+            // $(window).on('scroll',function(){
+            //     console.log(_temp.$route.path)
+            //     // console.log($(".article-content").height())
+            //     // console.log($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top))
+            //     if(_temp.$route.path === '/'){
+            //         path = 'index'
+            //     }else{
+            //         path = _temp.$route.path.slice(1)
+            //     }
+            //     if($(document).scrollTop()+$(window).height()-($(".article-content").height()+$(".article-content").offset().top)>-200){
+            //         // console.log('xxx')
+            //         // console.log(path)
+            //         _temp.ajaxstart({page:path,part:'article',num:_temp.pagedatas[path].num})
+            //     }
+            // })
         }
     }).$mount('#body-container')
 

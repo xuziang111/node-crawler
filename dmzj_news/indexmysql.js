@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_abstract (article_id,title,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img) VALUES (?,?,?,?,?,?,?,?,?,NULL)';
+var  addSql = 'INSERT INTO dmzj_abstract (article_id,title,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img,type) VALUES (?,?,?,?,?,?,?,?,?,NULL,?)';
 
 function savepage(news){
     mkfile(news)
@@ -88,12 +88,14 @@ let getNews = (res) => {
       source:temp('.head_con_p_o span:nth-child(2)').text().slice(3),
       author:temp('.head_con_p_o span:nth-child(3)').text().slice(3),
       abstract:temp('.com_about').text(),
-      img:temp('.li_content_img a img' ).attr('src'),     
+      img:temp('.li_content_img a img' ).attr('src'),
+      type:temp('.li_img_de span.bq_ico' ).text()
     };    
+    console.log(news)
     news.article_id = news.href.slice(news.href.lastIndexOf("/")+1,news.href.lastIndexOf(".")),  // 获取新闻网页链接
     news.local_article = './article/'+ news.article_id+'/'+news.article_id
 
-    var  addSqlParams = [news.article_id,news.tittle,news.source,news.href,news.time,news.author,news.img,news.local_article,news.abstract];
+    var  addSqlParams = [news.article_id,news.tittle,news.source,news.href,news.time,news.author,news.img,news.local_article,news.abstract,news.type];
     //创建储存文件夹
 
     savepage(news)
@@ -125,7 +127,7 @@ connection.query(addSql,addSqlParams,function (err, result) {
 
 
 
-for(let i=1;i<1300;i++){
+for(let i=1;i<1250;i++){
   netpage = `https://news.dmzj.com/p${i}.html`
   noteurls.push(netpage)
   console.log(netpage)

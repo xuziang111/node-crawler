@@ -95,7 +95,7 @@ width:680px;
     display:flex;
     justify-content: space-around;
 }
-.article-tittle{
+.article-title{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -126,4 +126,7 @@ main.page-content >div>div{
 }
 img{
     max-width:100% !important;
+}
+#footer{
+    min-width:1300px;
 }
