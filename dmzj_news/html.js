@@ -28,7 +28,7 @@ app.listen(8080, () => {
     }
 
   })  
-  app.get('/index/article/:id', (req, res) => {
+  app.get('/index/:id', (req, res) => {
     console.log(req.params) 
     console.log(req.path)
     let xxx = req.path.split('/')
@@ -45,6 +45,41 @@ app.listen(8080, () => {
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();
     var  sql = `select * from dmzj_abstract limit ${(req.params.id-1)*10}, 10;`;
+
+   connection.query(sql,function (err, result) {
+        if(err){
+          console.log('[SELECT ERROR] - ',err.message);
+          return;
+        }
+ 
+       console.log('--------------------------SELECT----------------------------');
+       searchPar = result;
+       res.send(searchPar)
+       console.log('------------------------------------------------------------\n\n');  
+});
+
+    connection.end();
+
+
+  })
+
+  app.get('/anime/:id', (req, res) => {
+    console.log(req.params) 
+    console.log(req.path)
+    let xxx = req.path.split('/')
+    console.log(xxx[1])
+    let searchPar
+
+
+    var connection = mysql.createConnection({
+      host     : 'localhost',
+      user     : 'zhaobsh',
+      password : 'Test6530',
+      database : 'dmzj'
+    });
+    // (?,?,?,?,?,?,?,?,?)
+    connection.connect();
+    var  sql = `select * from dmzj_news_anime limit ${(req.params.id-1)*10}, 10;`;
 
    connection.query(sql,function (err, result) {
         if(err){

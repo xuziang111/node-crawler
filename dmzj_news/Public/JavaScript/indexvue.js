@@ -28,17 +28,22 @@ let index = Vue.component('index',{
                 </section>               
             </div>
         </div>
-        <!--<aside class="right-side">-->
-            <!--<div>-->
-            <!--<h4>热点</h4>-->
-            <!--<hr>-->
-            <!--<ul>-->
-                <!--<li v-for="(item,index) in hot">-->
-                    <!--<a :href="item.href">{{item.title}}</a><span>{{item.date}}</span>-->
-                <!--</li>-->
-            <!--</ul>-->
-            <!--</div>-->
-        <!--</aside>-->
+        <nav aria-label="Page navigation">
+        <ul class="pagination">
+          <li>
+            <a href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          
+          <li @click="topage" v-for="(item3,index) in pages"><span :data-page="item3">{{item3}}</span></li>
+          <li>
+            <a href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+        </nav>
     </div>
     `,
     data:function(){
@@ -49,15 +54,22 @@ let index = Vue.component('index',{
                 {img:'./Images/8c007b5cly1fkayrbqu9sj216b0ovke1.jpg',href:'#',abstract:"zzz"}
                 ],
             article:[],
-            hot:[{href:'#',title:'东京动画奖2019”年度最佳动画作品奖与个人奖结果发表',date:'2019-2-21'}]
+        pages:[1,2,3,4,5],
+        pagess:['/index/1','/index/2','/index/3','/index/4','/index/5']
         }
     },
-    created:function(){
-        console.log('xxx')
-        console.log(this.ifcreated.index)
-        if(this.ifcreated.index === 0){
-            this.$emit('loadpage',{page:'index',part:'indeximg'})
-            this.$emit('loadpage',{page:'index',part:'article',num:1})
+    methods:{
+        topage:function(e){
+            console.log(e.target.getAttribute('data-page'))
+            console.log(e.target)
+            this.$emit('loadpage',{page:'index',part:'article',num:e.target.getAttribute('data-page')})
+            // this.$emit('loadpage',{page:'index',part:'indeximg'})
         }
+    },
+    mounted:function(){
+        this.$emit('loadpage',{page:'index',part:'article',num:1})
+    },
+    created:function(){
+
     }
 })

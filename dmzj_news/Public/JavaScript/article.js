@@ -45,5 +45,8 @@ let articles = Vue.component('articles',{
     created:function(){
         this.getArticle({page:'article',part:this.id})
         //{page:'article',part:this.id}
+    },
+    mounted:function(){
+        window.scrollTo(0,0)
     }
 })
