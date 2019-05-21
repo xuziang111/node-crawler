@@ -40,11 +40,13 @@ app.listen(8080, () => {
       host     : 'localhost',
       user     : 'zhaobsh',
       password : 'Test6530',
-      database : 'dmzj'
+      database : 'dmzj',
+      // timezone:'UTC'
+      'dateStrings': true 
     });
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();
-    var  sql = `select * from dmzj_abstract limit ${(req.params.id-1)*10}, 10;`;
+    var  sql = `select * from dmzj_abstract order by article_id desc limit ${(req.params.id-1)*10}, 10;`;
 
    connection.query(sql,function (err, result) {
         if(err){
@@ -79,7 +81,7 @@ app.listen(8080, () => {
     });
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();
-    var  sql = `select * from dmzj_news_anime limit ${(req.params.id-1)*10}, 10;`;
+    var  sql = `select * from dmzj_news_anime order by article_id desc limit ${(req.params.id-1)*10}, 10;`;
 
    connection.query(sql,function (err, result) {
         if(err){

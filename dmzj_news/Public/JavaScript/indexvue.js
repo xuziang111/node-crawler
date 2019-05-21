@@ -30,18 +30,17 @@ let index = Vue.component('index',{
         </div>
         <nav aria-label="Page navigation">
         <ul class="pagination">
-          <li>
-            <a href="#" aria-label="Previous">
+          <li :class='isflip.pre'>
+            <router-link :to='isflip.prepage' aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
-            </a>
+            </router-link>
           </li>
           
-          <li @click="topage" v-for="(item3,index) in pages"><span :data-page="item3">{{item3}}</span></li>
-          <li v-for="(item3,index) in pages"><router-link :to="pagess[index]"><span :data-page="item3">{{item3}}</span></router-link></li>
-          <li>
-            <a href="#" aria-label="Next">
+          <li v-for="(item3,index) in pages" :class='isactive[index]'><router-link :to="pagess[index]"><span :data-page="item3">{{item3}}</span></router-link></li>
+          <li :class='isflip.next'>
+            <router-link :to='isflip.nextpage' aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
-            </a>
+            </router-link>
           </li>
         </ul>
         </nav>
@@ -49,6 +48,13 @@ let index = Vue.component('index',{
     `,
     data:function(){
         return {
+            isflip:{
+                pre:'disabled',
+                next:'disabled',
+                prepage:'/index/1',
+                nextpage:'/index/6'
+            },
+            isactive:['active','','','',''],
             page:this.pagedata.index,
             indeximg:[{img:'./Images/66474729_p0.jpg',href:'#',abstract:'ccc',},
                 {img:'./Images/8c007b5cgy1fqwefu5tkrj20xc0nkqv5.jpg',href:'#',abstract:'xxx'},
@@ -60,26 +66,58 @@ let index = Vue.component('index',{
         }
     },
     methods:{
-        topage:function(e){
-            console.log(e.target.getAttribute('data-page'))
-            console.log(e.target)
-            this.$emit('loadpage',{page:'index',part:'article',num:e.target.getAttribute('data-page')})
-            // this.$emit('loadpage',{page:'index',part:'indeximg'})
+        creatpage:function(e){
+            e = e - 0
+            console.log(e)
+            if(e==1){
+                this.isflip={
+                    pre:'disabled',
+                next:'',
+                prepage:'',
+                nextpage:'/index/6'
+                }
+                this.isactive=['active','','','','']
+                this.pages=[1,2,3,4,5],
+                this.pagess=['/index/1','/index/2','/index/3','/index/4','/index/5']
+                console.log(this.isflip)
+            }
+            if(e==2){
+                this.isflip={
+                    pre:'',
+                next:'',
+                prepage:`/index/${e-1}`,
+                nextpage:`/index/${e+1}`
+                }
+                this.isactive=['','active','','','']
+                this.pages=[1,2,3,4,5],
+                this.pagess=['/index/1','/index/2','/index/3','/index/4','/index/5']
+            }
+            if(e >= 3 ){
+                this.isflip={
+                    pre:'',
+                next:'',
+                prepage:`/index/${e-1}`,
+                nextpage:`/index/${e+1}`
+                }
+                this.pages=[e-2,e-1,e,e+1,e+2]
+                this.isactive=['','','active','','']
+                this.pagess=[`/index/${this.pages[0]}`,`/index/${this.pages[1]}`,`/index/${this.pages[2]}`,`/index/${this.pages[3]}`,`/index/${this.pages[4]}`]
+            }
+            // console.log(e.target.getAttribute('data-page'))
+            // console.log(e.target)
+            // this.$emit('loadpage',{page:'index',part:'article',num:e.target.getAttribute('data-page')})
         }
     },
     mounted:function(){
-        console.log(this.$router)
-        // this.$emit('loadpage',{page:'index',part:'article',num:1})
+    //进入组建时触发
+        this.$emit('loadpage',{page:'index',part:'article',num:this.$route.params.id})
+        this.creatpage(this.$route.params.id)
     },
     beforeRouteUpdate (to, from, next) {
-        console.log(to.params.id)
-        console.log('next')
+        //每次同组件间跳转触发
         this.$emit('loadpage',{page:'index',part:'article',num:to.params.id})
+        this.creatpage(to.params.id)
         next()
-        // 在当前路由改变，但是该组件被复用时调用
-        // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
-        // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
-        // 可以访问组件实例 `this`
       },
     created:function(){
 
