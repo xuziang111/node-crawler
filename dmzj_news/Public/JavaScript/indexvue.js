@@ -37,6 +37,7 @@ let index = Vue.component('index',{
           </li>
           
           <li @click="topage" v-for="(item3,index) in pages"><span :data-page="item3">{{item3}}</span></li>
+          <li v-for="(item3,index) in pages"><router-link :to="pagess[index]"><span :data-page="item3">{{item3}}</span></router-link></li>
           <li>
             <a href="#" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
@@ -67,8 +68,19 @@ let index = Vue.component('index',{
         }
     },
     mounted:function(){
-        this.$emit('loadpage',{page:'index',part:'article',num:1})
+        console.log(this.$router)
+        // this.$emit('loadpage',{page:'index',part:'article',num:1})
     },
+    beforeRouteUpdate (to, from, next) {
+        console.log(to.params.id)
+        console.log('next')
+        this.$emit('loadpage',{page:'index',part:'article',num:to.params.id})
+        next()
+        // 在当前路由改变，但是该组件被复用时调用
+        // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
+        // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+        // 可以访问组件实例 `this`
+      },
     created:function(){
 
     }

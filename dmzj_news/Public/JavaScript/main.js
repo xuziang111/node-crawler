@@ -22,7 +22,7 @@
 
     // const article = { template: '<div>bar</div>' }
     const routes = [
-        { path: '/', component:index},
+        { path: '/', redirect: '/index/1'},
         { path: '/index/:id', component:index},
         { path: '/anime/:id', component: anime },
         { path: '/anime', redirect: '/anime/1' },
