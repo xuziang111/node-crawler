@@ -26,8 +26,18 @@ app.listen(8080, () => {
       console.log(err)
       res.send(`<h1>该新闻还未审核通过或已被删除</h1>`)
     }
+  })
+  app.get('/hot', (req, res) => {
+    let string
+    try{
+      string = fs.readFileSync(`./hot/hot.json`,'utf-8')
+      res.send(string)
+    }catch(err){
+      console.log(err)
+      res.send(`404`)
+    }
+  })    
 
-  })  
   app.get('/index/:id', (req, res) => {
     console.log(req.params) 
     console.log(req.path)
@@ -42,7 +52,7 @@ app.listen(8080, () => {
       password : 'Test6530',
       database : 'dmzj',
       // timezone:'UTC'
-      'dateStrings': true 
+      dateStrings: true 
     });
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();

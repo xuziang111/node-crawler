@@ -125,7 +125,7 @@ let getNews = (res,noteurl) => {
 //45355
 //46796
 
-for(let i=61798;i<=61800;i++){
+for(let i=61713;i<62422;i++){
   netpage = `https://news.dmzj.com/article/${i}_all.html`
   noteurls.push(netpage)
 }

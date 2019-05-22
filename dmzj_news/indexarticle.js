@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 });
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
-var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,tittle,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img,type) VALUES (?,?,?,?,?,?,NULL,?,?,NULL,?)';
+var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,title,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img,type) VALUES (?,?,?,?,?,?,NULL,?,?,NULL,?)';
 
 var modSql = 'UPDATE dmzj_news SET type = ? WHERE article_id = ?';
 
@@ -107,7 +107,7 @@ fs.writeFile(news.local_article + '/' + news.article_id ,$('.news_content').html
 
 
 
-for(let i=60450;i<61800;i++){
+for(let i=61713;i<62422;i++){
   netpage = `https://news.dmzj.com/article/${i}.html`
   noteurls.push(netpage)
 }

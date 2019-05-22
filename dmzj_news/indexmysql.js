@@ -127,7 +127,7 @@ connection.query(addSql,addSqlParams,function (err, result) {
 
 
 
-for(let i=1;i<1250;i++){
+for(let i=1;i<=42;i++){
   netpage = `https://news.dmzj.com/p${i}.html`
   noteurls.push(netpage)
   console.log(netpage)
