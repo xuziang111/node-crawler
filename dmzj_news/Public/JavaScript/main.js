@@ -38,6 +38,7 @@
         el:'#body-container',
         router,
         data:{
+            loadinganime:'loadinganime',
             ifcreated:{index:0,anime:0,hot:0},
             pagedatas:{
                 //hot {href:'点击文章链接',title:'标题,date:'日期'}
@@ -62,8 +63,10 @@
             //index/article/1
             //anime/article/1
             //......
+
             ajaxstart:function (e){
                 console.log(e)
+                this.loadinganime = 'loadinganime active'
                 let _temp = this
             let path
             // console.log(e.page)
@@ -88,6 +91,7 @@
                         })
                         this.e = e
                         _temp.ajaxsuccess(data,e)
+                        _temp.loadinganime = 'loadinganime'
                     },
                     error:function(xxx){
                         let data = [{title:'东京动画奖2019”年度最佳动画作品奖与个人奖结果发表',href:'/article/61098',img:'/Images/66474729_p0.jpg',abstract:'东京动画奖2019（TAAF2019）”的“年度最佳动画部门”作品奖与个人奖结果发表了。',date:'2019-2-21',source:'dmzj',type:'动画'},
@@ -97,6 +101,7 @@
                         this.e = e
                         console.log(e)
                         _temp.ajaxsuccess(data,e)
+                        _temp.loadinganime = 'loadinganime'
                     },
                     
                 });
@@ -106,6 +111,7 @@
                 console.log(e)
                 this.ifcreated[e.page]=1
                 this.pagedatas[e.page][e.part]=data
+                window.scrollTo(0,0)
                 // if(!e.num||e.num===1){
                 //     this.pagedatas[e.page][e.part] = data
                 //     this.ifcreated[e.page]=1

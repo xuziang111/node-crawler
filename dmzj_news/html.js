@@ -87,7 +87,8 @@ app.listen(8080, () => {
       host     : 'localhost',
       user     : 'zhaobsh',
       password : 'Test6530',
-      database : 'dmzj'
+      database : 'dmzj',
+      dateStrings: true 
     });
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();
