@@ -43,7 +43,7 @@ app.listen(8080, () => {
     console.log(req.path)
     let xxx = req.path.split('/')
     console.log(xxx[1])
-    let searchPar
+    
 
 
     var connection = mysql.createConnection({
@@ -57,21 +57,21 @@ app.listen(8080, () => {
     // (?,?,?,?,?,?,?,?,?)
     connection.connect();
     var  sql = `select * from dmzj_abstract order by article_id desc limit ${(req.params.id-1)*10}, 10;`;
-
+    var searchPar=[]
    connection.query(sql,function (err, result) {
         if(err){
           console.log('[SELECT ERROR] - ',err.message);
           return;
         }
- 
+
        console.log('--------------------------SELECT----------------------------');
        searchPar = result;
+       connection.end();
        res.send(searchPar)
        console.log('------------------------------------------------------------\n\n');  
 });
-
-    connection.end();
-
+console.log(searchPar)
+    
 
   })
 
@@ -99,18 +99,52 @@ app.listen(8080, () => {
           console.log('[SELECT ERROR] - ',err.message);
           return;
         }
- 
+
        console.log('--------------------------SELECT----------------------------');
        searchPar = result;
-       res.send(searchPar)
+       connection.end();
+    res.send(searchPar)
        console.log('------------------------------------------------------------\n\n');  
 });
-
-    connection.end();
 
 
   })
 
+  app.get('/cv/:id', (req, res) => {
+    console.log(req.params) 
+    console.log(req.path)
+    let xxx = req.path.split('/')
+    console.log(xxx[1])
+    let searchPar
+
+
+
+    var connection = mysql.createConnection({
+      host     : 'localhost',
+      user     : 'zhaobsh',
+      password : 'Test6530',
+      database : 'dmzj',
+      dateStrings: true 
+    });
+    // (?,?,?,?,?,?,?,?,?)
+    connection.connect();
+    var  sql = `select * from dmzj_news_cv order by article_id desc limit ${(req.params.id-1)*10}, 10;`;
+
+   connection.query(sql,function (err, result) {
+        if(err){
+          console.log('[SELECT ERROR] - ',err.message);
+          return;
+        }
+        
+       console.log('--------------------------SELECT----------------------------');
+       searchPar = result;
+       res.send(searchPar)
+       connection.end();
+       console.log('------------------------------------------------------------\n\n');  
+});
+
+
+  })
 
 if(!port){
   console.log('请指定端口号 例如\nnode server.js 8888')
@@ -156,17 +190,4 @@ if(path == '/'){ //首页
 
   /******** 代码结束，下面不要看 ************/
 })
-function readBody(request){
-  return new Promise((resolve,reject) => {
-    let body = [];
-    request.on('data',(chunk) => {
-      body.push(chunk)
-    }).on('end',() => {
-    body = Buffer.concat(body).toString();
-    resolve(body)
-    })
-  })
-}
 
-server.listen(port)
-console.log('监听 ' + port + ' 成功\n请打开 http://localhost:' + port)

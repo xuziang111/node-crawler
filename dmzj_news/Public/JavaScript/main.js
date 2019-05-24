@@ -26,6 +26,8 @@
         { path: '/index/:id', component:index},
         { path: '/anime/:id', component: anime },
         { path: '/anime', redirect: '/anime/1' },
+        { path: '/cv/:id', component: cv },
+        { path: '/cv', redirect: '/cv/1' },
         { path: '/article/:id', component: articles},
         { path: '*', component: index },
     ]
@@ -53,6 +55,9 @@
                     article:[],
                 },
                 anime:{
+                    article:[{article:'',title:'',publish_source:'',href:'',publish_date:'',}],
+                },
+                cv:{
                     article:[{article:'',title:'',publish_source:'',href:'',publish_date:'',}],
                 }
             },
