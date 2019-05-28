@@ -9,16 +9,16 @@ var async = require('../node_modules/async')
 var mysql      = require('../node_modules/mysql');
 var request = require('../node_modules/request');
 
-// var connection = mysql.createConnection({
-//   host     : 'localhost',
-//   user     : 'zhaobsh',
-//   password : 'Test6530',
-//   database : 'dmzj'
-// });
-// // (?,?,?,?,?,?,?,?,?)
-// connection.connect();
-// var  addSql = 'INSERT IGNORE INTO dmzj_news (article_img) VALUES (?)';
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'zhaobsh',
+  password : 'Test6530',
+  database : 'dmzj'
+});
+// (?,?,?,?,?,?,?,?,?)
+connection.connect();
 
+var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,title,publish_source,href,publish_date,publish_author,img_abstract,local_article,abstract,article_img,type) VALUES (?,?,?,?,?,?,NULL,?,?,NULL,?)';
 
  
 
@@ -32,13 +32,36 @@ let getNews = (res,noteurl) => {
    */
   let $ = cheerio.load(res.text, { decodeEntities: false });
   let img_type=[]
-
-//   console.log('res.text')
-// console.log(res.text)
-    
   let news={}   
-    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf("_")),  // 获取新闻网页链接
+    news.article_id = noteurl.slice(noteurl.lastIndexOf("/")+1,noteurl.lastIndexOf("_")),  // 获取网页id
     news.local_article = './article/'+ news.article_id
+//------------获取文章---------------
+    $('.news_content_info_r').remove()
+    //去除分享
+    $('.bd_share').remove() 
+    let type = $('.bq_ico').text()//种类
+      let title = $('.news_content_head h1').text()//标题
+      let publish_source = $('.data_from').text()//来源
+      let href = noteurl //链接
+      let date = $('.data_time').text() //日期
+      let author = $('.issuer_con span h3 a').text() //作者
+      let abstract = $('.news_content_con p:nth-child(1)').text().trim() //简介
+      let addSqlParams = [news.article_id,title,publish_source,href,date,author,news.local_article,abstract,type]
+  //将文章插入进表
+  connection.query(addSql,addSqlParams,function (err, result) {
+    if(err){
+     console.log('[INSERT ERROR] - ',err.message);
+     return;
+    }        
+  
+   console.log('--------------------------INSERT----------------------------');  
+   console.log('INSERT ID:',result);        
+   console.log('-----------------------------------------------------------------\n\n');  
+  });
+  //
+
+
+
     fs.mkdir(news.local_article,function(err){
         if (err) {
             return console.error(err);
@@ -71,27 +94,12 @@ let getNews = (res,noteurl) => {
       readStream.pipe(writeStream);
       process.on('uncaughtException', function (err) {
 
-      });
-      // console.log('c')
-      // console.log(img_type) 
-// }catch(e){
-//   console.log(e)
-// }
-   
-    }
-    
-    // console.log(temp)
- 
-   
+      });  
+    }  
   });
-  console.log(2)
-  console.log($('.news_content_con').html())
 
-//   console.log('1')
 
-//   console.log($('.news_content').html())
-//   console.log('x')
-// console.log($('.news_content img'))
+
   Array.prototype.forEach.call($('.news_content img'),function(ele,index){
     console.log('z')
     console.log(img_type[index])
