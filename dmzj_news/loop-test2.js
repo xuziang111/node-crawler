@@ -26,9 +26,54 @@ var  addSql = 'INSERT IGNORE INTO dmzj_news (article_id,title,publish_source,hre
 // (?,?,?,?,?,?,?,?,?)
 connection.connect();
 
+let concurrencyCount = 0
+
+let articleid,checkpoint
+
+// function saveimg(){
+//     let tempimgs=[]
+//     console.log('---------------------')
+//       // console.log(string = JSON.parse(fs.readFileSync(`./article/62512/62512img`,'utf-8')))
+//       for(let i = checkpoint;i<=articleid;i++){
+//           console.log(fs.readFileSync(`./article/${i}/${i}img`,'utf-8'))
+//           if(fs.readFileSync(`./article/${i}/${i}img`,'utf-8')){
+//               string = JSON.parse(fs.readFileSync(`./article/${i}/${i}img`,'utf-8'))
+//               string.forEach(element => {
+//                   tempimgs.push(element)
+//                   console.log(element)
+//               });
+//           }
+//       }
+
+//       async.mapLimit(tempimgs,5,function(tempimg,callback){
+//           var src = {
+//               url:ele.attribs.src,
+//               headers:{
+//                   'method': 'GET',
+//                   'Referer':`https://news.dmzj.com`,
+//                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+//               }
+//           }
+//           let img_name = ele.attribs.src.slice(ele.attribs.src.lastIndexOf(".")+1)
+//           console.log(img_name)
+//           var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.${img_name}`);
+//           var readStream = request(src)
+//           readStream.pipe(writeStream);
+//           process.on('uncaughtException', function (err) {
+//               console.log(err)
+//           }); 
+
+//          console.log('下载完成')
+//         },function(err,data){
+//           console.log(err)
+//         }) 
+// }
+
+
+
 
 function loopfn(){
-    let checkpoint = fs.readFileSync('data/checkpoint.json','utf-8')
+    checkpoint = fs.readFileSync('data/checkpoint.json','utf-8')
     console.log(checkpoint)
     let getNews = (res,noteurl) => {
         // 访问成功，请求页面所返回的数据会包含在res.text中。
@@ -79,21 +124,20 @@ function loopfn(){
                     let img_name = ele.attribs.src.slice(ele.attribs.src.lastIndexOf(".")+1)
                     console.log(img_name)
                     img_type.push(img_name)
-                    var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.${img_name}`);
-                    var readStream = request(src)
-                    readStream.pipe(writeStream);
-                    process.on('uncaughtException', function (err) {
-                        console.log(err)
-                    });  
+                    // var writeStream = fs.createWriteStream(`article/${news.article_id}/${idx}.${img_name}`);
+                    // var readStream = request(src)
+                    // readStream.pipe(writeStream);
+                    // process.on('uncaughtException', function (err) {
+                    //     console.log(err)
+                    // });  
                 }  
             });
 
-            fs.writeFile(news.local_article + '/' + news.article_id +'img',tempurl,'utf8',function(error){
+            fs.writeFile(news.local_article + '/' + news.article_id +'img',JSON.stringify(tempurl),'utf8',function(error){
                 if(error){
                     console.log(error);
                     return false;
                 }
-                console.log()
                 console.log('图片地址写入成功'+news.article_id);
               })
 
@@ -128,28 +172,85 @@ function loopfn(){
       //插入表函数
       function savetext(noteurl,callback){
         console.time('  耗时');
+        concurrencyCount++;
         //superagent访问页面来获取内容，获取到的内容通过getNews处理
         superagent.get(noteurl).end((err, res) => {
           if (err) {
             // 如果访问失败或者出错，会这行这里
             console.log(`抓取失败 - ${err}`)
+            console.log('并发数:', concurrencyCount--, 'fetch');
             callback(null,err)
           } else {
-            // callback(null,[noteurl,res.text])  
+            console.log('并发数:', concurrencyCount--, 'fetch');
+            callback(null,[noteurl,res.text])  
           getNews(res,noteurl)
-          callback(null, 'sc');
           }
         });
       }
       
       //按线程执行
       function startwork(noteurls){
-        async.mapLimit(noteurls,5,function(noteurl,callback){
+        async.mapLimit(noteurls,10,function(noteurl,callback){
             //进行加载
             savetext(noteurl, callback)
             console.timeEnd("  耗时")
           },function(err,data){
-            console.log(err)
+              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+              let tempimgs=[]
+              console.log('---------------------')
+                // console.log(string = JSON.parse(fs.readFileSync(`./article/62512/62512img`,'utf-8')))
+                console.log(checkpoint)
+                console.log(articleid)
+                for(let i = checkpoint;i<articleid;i++){
+
+                        if(fs.existsSync(`./article/${i}/${i}img`)){
+                            if(fs.readFileSync(`./article/${i}/${i}img`,'utf-8') != null){
+                                string = JSON.parse(fs.readFileSync(`./article/${i}/${i}img`,'utf-8'))
+                                string.forEach(element => {
+                                    tempimgs.push(element)
+                                    console.log(element)
+                                });
+                            }
+                        }
+
+                }
+                console.log('tempimgs')
+                console.log(tempimgs)
+                let i =100
+                async.mapLimit(tempimgs,1,function(tempimg,callback){
+                    console.time('  耗时');
+                    setTimeout(function() {
+                        console.log(i)
+                        i++                            
+                    var src = {
+                        url:tempimg,
+                        headers:{
+                            'method': 'GET',
+                            'Referer':`https://news.dmzj.com`,
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'
+                        }
+                    }
+                    let img_name = tempimg.slice(tempimg.lastIndexOf("/")+1,tempimg.lastIndexOf("."))
+                    let img_type
+                    if(tempimg.lastIndexOf("?") != -1){
+                        img_type = tempimg.slice(tempimg.lastIndexOf(".")+1,tempimg.lastIndexOf("?"))
+                    }else{
+                        img_type = tempimg.slice(tempimg.lastIndexOf(".")+1)
+                    }
+                    console.log(img_type)
+                    var writeStream = fs.createWriteStream(`article/img/${img_name}.${img_type}`);
+                    var readStream = request(src)
+                    readStream.pipe(writeStream);
+                    process.on('uncaughtException', function (err) {
+                        console.log(err)
+                    }); 
+                    console.timeEnd("  耗时")
+                   console.log('下载完成')
+                    callback(null,'x')
+                    }, i);
+                  },function(err,data){
+                    console.log(err)
+                  }) 
           })   
       }
 
@@ -165,7 +266,11 @@ function loopfn(){
                 let $ = cheerio.load(res.text, { decodeEntities: false });
                 console.log($('.briefnews_con .briefnews_con_li .li_img_de h3 a').attr('href'))
                 temphref = $('.briefnews_con .briefnews_con_li .li_img_de h3 a').attr('href') 
-                let articleid = temphref.slice(temphref.lastIndexOf("/")+1,temphref.lastIndexOf(".")) - 0
+                articleid = temphref.slice(temphref.lastIndexOf("/")+1,temphref.lastIndexOf(".")) - 0
+                console.log('articleid')
+                console.log(articleid)
+                console.log('checkpoint')
+                console.log(checkpoint)
                 if(articleid>checkpoint){ //判断是否更新
                     //循环键加载的页面
                     fs.writeFile('data/checkpoint.json',JSON.stringify(articleid),'utf8',function(error){
@@ -182,8 +287,6 @@ function loopfn(){
                         netpage = `https://news.dmzj.com/article/${i}.html`
                         noteurls.push(netpage)
                     }
-                    console.log('noteurls')
-                    console.log(noteurls)
                     netpage = null
                     //开始执行加载
                     startwork(noteurls)
@@ -192,7 +295,6 @@ function loopfn(){
                 }
                  
                 temphref=null
-                articleid=null
             }
           });
     }
@@ -204,14 +306,14 @@ function loopfn(){
 
 
 
-
+loopfn()
 
 
 
 
 var j = schedule.scheduleJob(rule, function(){
 console.log('haha')
-    loopfn()
+    // loopfn()
     // connection.end()
 });
 

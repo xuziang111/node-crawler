@@ -7,12 +7,7 @@ const superagent= require('../node_modules/superagent');
 const cheerio = require('../node_modules/cheerio');
 
 
-console.log('xxx')
-superagent.get('https://news.dmzj.com/article/61877.html').end((err, res) => {
-    let $ = cheerio.load(res.text, { decodeEntities: false });
-    console.log(!$('.news_content').text()==='')
-    if($('.news_content').text()===''){
-    console.log('haha')
-    }
-
-})
+console.log(string = JSON.parse(fs.readFileSync(`./article/62512/62512img`,'utf-8')))
+string.forEach(element => {
+    console.log(element)
+});

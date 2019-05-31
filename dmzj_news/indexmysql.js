@@ -174,39 +174,3 @@ var j = schedule.scheduleJob(rule, function(){
 
 
 // connection.end();
-
-
-
-
-
-
-//--------------------------------------------------------
-if(!port){
-  console.log('请指定端口号 例如\nnode server.js 8888')
-  process.exit(1)
-}
-var server = http.createServer(function(request, response){
-	console.log(request.url)
-
-     // 输出响应头
-     response.writeHead (200, {'Content-Type' : 'text/html;charset=utf-8'});
-     // 写内容
-     response.write('xxx'.toString('utf-8'));
-     // 结束，如果不写，请求一直处于pedding状态，可注释做测试
-     response.end();
-
-function readBody(request){
-  return new Promise((resolve,reject) => {
-    let body = [];
-    request.on('data',(chunk) => {
-      body.push(chunk)
-    }).on('end',() => {
-    body = Buffer.concat(body).toString();
-    resolve(body)
-    })
-  })
-}
-})
-
-server.listen(port)
-console.log('监听 ' + port + ' 成功\n请打开 http://localhost:' + port)
